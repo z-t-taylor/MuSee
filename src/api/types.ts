@@ -10,9 +10,9 @@ export interface Artwork {
   };
   medium?: string;
   origin?: string;
-  styles?: Array<string>;
+  styles?: string | string[];
   description?: string;
   exhibition_history?: string;
-  museumSource: "aic" | "rijksmuseum" | "smithsonian";
+  museumSource: "aic" | "met";
   museumLink?: string;
 }

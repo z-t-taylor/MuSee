@@ -1,6 +1,6 @@
 import { Artwork } from "./types";
 
-interface AICArtworkBase {
+interface AICArtworkBaseResponse {
   id: number;
   title: string;
   artist_display: string | undefined;
@@ -13,7 +13,7 @@ interface AICArtworkBase {
 }
 
 interface AICSingleArtworkResponse {
-  data: AICArtworkBase & {
+  data: AICArtworkBaseResponse & {
     place_of_origin?: string;
     main_reference_number: string;
     description?: string;
@@ -24,7 +24,7 @@ interface AICSingleArtworkResponse {
 }
 
 export interface AICArtworkListResponse {
-  data: AICArtworkBase[];
+  data: AICArtworkBaseResponse[];
   pagination: {
     limit: number;
     offset: number;
@@ -36,7 +36,7 @@ export interface AICArtworkListResponse {
 }
 
 export const adaptAICToArtwork = (
-  item: AICArtworkBase & Partial<AICSingleArtworkResponse["data"]>
+  item: AICArtworkBaseResponse & Partial<AICSingleArtworkResponse["data"]>
 ): Artwork => ({
   id: item.id.toString(),
   title: item.title,
