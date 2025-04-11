@@ -20,6 +20,7 @@ export const fetchAICArtworkList = async (
 
 export const fetchSingleAICArtwork = async (id: string) => {
   const response = await apiAIC.get(`/${id}`);
+  console.log(response.data);
   return adaptAICToArtwork(response.data);
 };
 
@@ -33,7 +34,8 @@ export const fetchMetArtworkList = async (): Promise<Artwork[]> => {
 
   const artworks = await Promise.all(
     publicDomainIDs.map(async (id: number) => {
-      const { data } = await apiMet.get(`/object/${id}`);
+      const { data } = await apiMet.get(`/objects/${id}`);
+      console.log(data);
       return data.isPublicDomain ? adaptMetToArtwork(data) : null;
     })
   );
