@@ -43,7 +43,7 @@ export const adaptAICToArtwork = (
   artist: item.artist_display || undefined,
   creationDate: item.date_display || undefined,
   image: {
-    imageURL: `https://www.artic.edu/iiif/2/{item.image_id}/full/843,/0/default.jpg`,
+    imageURL: `https://www.artic.edu/iiif/2/${item.image_id}/full/843,/0/default.jpg`,
     alt_text: item.thumbnail?.alt_text ?? item.title,
     thumbnail: item.thumbnail?.lqip,
   },
@@ -53,5 +53,5 @@ export const adaptAICToArtwork = (
   description: item.description,
   exhibition_history: item.exhibition_history,
   museumSource: "aic",
-  museumLink: `https://www.artic.edu/artworks/{item.id}`,
+  museumLink: `https://www.artic.edu/artworks/${item.id}`,
 });
