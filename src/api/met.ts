@@ -1,7 +1,7 @@
 import { Artwork } from "./types";
 
 export interface MetAPIBaseResponse {
-  objectIDs: number[];
+  objectIDs: number[] | null;
 }
 
 interface MetSingleArtworkResponse {
@@ -17,6 +17,7 @@ interface MetSingleArtworkResponse {
   country?: string;
   medium: string;
   classification: string;
+  objectURL: string;
 }
 
 export const adaptMetToArtwork = (item: MetSingleArtworkResponse): Artwork => ({
@@ -35,5 +36,5 @@ export const adaptMetToArtwork = (item: MetSingleArtworkResponse): Artwork => ({
   description: item.artistDisplayBio || undefined,
   exhibition_history: undefined,
   museumSource: "met",
-  museumLink: `https://collectionapi.metmuseum.org/public/collection/v1/objects/${item.objectID}`,
+  museumLink: item.objectURL,
 });

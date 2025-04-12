@@ -9,7 +9,7 @@ const apiAIC = axios.create({
 
 export const fetchAICArtworkList = async (
   page: number = 1,
-  limit: number = 10
+  limit: number = 12
 ): Promise<Artwork[]> => {
   const offset = (page - 1) * limit;
   const response = await apiAIC.get<AICArtworkListResponse>(
@@ -20,7 +20,6 @@ export const fetchAICArtworkList = async (
 
 export const fetchSingleAICArtwork = async (id: string) => {
   const response = await apiAIC.get(`/${id}`);
-  console.log(response.data);
   return adaptAICToArtwork(response.data);
 };
 
@@ -28,18 +27,47 @@ const apiMet = axios.create({
   baseURL: "https://collectionapi.metmuseum.org/public/collection/v1",
 });
 
-export const fetchMetArtworkList = async (): Promise<Artwork[]> => {
-  const { data: baseData } = await apiMet.get<MetAPIBaseResponse>("/objects");
-  const publicDomainIDs = baseData.objectIDs.slice(0, 10);
+const metQueries = {
+  paintings: "paintings",
+  prints: "prints",
+  sculptures: "sculpture",
+  ceramics: "ceramics",
+} as const;
 
-  const artworks = await Promise.all(
-    publicDomainIDs.map(async (id: number) => {
-      const { data } = await apiMet.get(`/objects/${id}`);
-      console.log(data);
-      return data.isPublicDomain ? adaptMetToArtwork(data) : null;
-    })
-  );
-  return artworks.filter((art): art is Artwork => art !== null);
+export const fetchMetArtworkList = async (
+  type: keyof typeof metQueries = "paintings"
+): Promise<Artwork[]> => {
+  try {
+    const { data: searchData } = await apiMet.get<MetAPIBaseResponse>(
+      `/search?hasImages=true&q=${metQueries[type]}`
+    );
+
+    if (!searchData.objectIDs?.length) return [];
+
+    const artworks = await Promise.all(
+      searchData.objectIDs.slice(0, 12).map(async (id) => {
+        try {
+          const { data } = await apiMet.get(`/objects/${id}`);
+
+          if (data?.message === "Not a valid object") {
+            return null;
+          }
+
+          return data?.isPublicDomain && data?.primaryImage
+            ? adaptMetToArtwork(data)
+            : null;
+        } catch (error) {
+          console.log(`Error: ${error}`);
+          return null;
+        }
+      })
+    );
+
+    return artworks.filter((art): art is Artwork => art !== null);
+  } catch (error) {
+    console.log(`Error: ${error}`);
+    return [];
+  }
 };
 
 export const fetchAllArtworks = async (): Promise<Artwork[]> => {

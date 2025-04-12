@@ -18,7 +18,6 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           loading="lazy"
         />
         <h2>{artwork.title}</h2>
-        <h3>{artwork.artist}</h3>
       </Link>
     </div>
   );
