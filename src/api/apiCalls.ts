@@ -1,5 +1,9 @@
 import axios from "axios";
-import { adaptAICToArtwork, AICArtworkListResponse } from "./aic";
+import {
+  adaptAICToArtwork,
+  AICArtworkListResponse,
+  AICSingleArtworkResponse,
+} from "./aic";
 import { Artwork } from "./types";
 import { adaptMetToArtwork, MetAPIBaseResponse } from "./met";
 
@@ -15,12 +19,32 @@ export const fetchAICArtworkList = async (
   const response = await apiAIC.get<AICArtworkListResponse>(
     `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail`
   );
-  return response.data.data.map(adaptAICToArtwork);
+
+  const artworks = await Promise.all(
+    response.data.data.map((artwork) =>
+      fetchSingleAICArtwork(artwork.id.toString())
+    )
+  );
+  return artworks.filter((art): art is Artwork => art !== null);
 };
 
-export const fetchSingleAICArtwork = async (id: string) => {
-  const response = await apiAIC.get(`/${id}`);
-  return adaptAICToArtwork(response.data);
+const fetchSingleAICArtwork = async (id: string): Promise<Artwork | null> => {
+  try {
+    const response = await apiAIC.get<AICSingleArtworkResponse>(
+      `/${id}?fields=id,title,artist_display,image_id,date_display,thumbnail,medium_display,description,place_of_origin,style_titles,exhibition_history `
+    );
+
+    const data = response.data.data;
+
+    const formattedStyles = Array.isArray(data.style_titles)
+      ? data.style_titles.join(", ")
+      : data.style_titles;
+
+    return adaptAICToArtwork({ ...data, style_titles: formattedStyles });
+  } catch (error) {
+    console.log(`Error: ${error}`);
+    return null;
+  }
 };
 
 const apiMet = axios.create({

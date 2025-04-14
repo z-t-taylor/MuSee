@@ -12,13 +12,13 @@ interface AICArtworkBaseResponse {
   date_display: string | undefined;
 }
 
-interface AICSingleArtworkResponse {
+export interface AICSingleArtworkResponse {
   data: AICArtworkBaseResponse & {
     place_of_origin?: string;
     main_reference_number: string;
     description?: string;
     medium_display?: string;
-    style_titles?: string[];
+    style_titles?: string | string[];
     exhibition_history?: string;
   };
 }

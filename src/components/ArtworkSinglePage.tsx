@@ -44,19 +44,38 @@ export const ArtworkSinglePage: React.FC = () => {
         <p>Loading..</p>
       ) : (
         <>
-          <h1>{artwork.title}</h1>
-          <h2>{artwork.artist || "Unknown"}</h2>
+          <h1>Title: {artwork.title}</h1>
+          <h2>Artist: {artwork.artist || "Unknown"}</h2>
           <img
             src={artwork.image?.imageURL}
             alt={artwork.image?.alt_text || artwork.title}
             loading="lazy"
           />
-          <h3>{artwork.creationDate}</h3>
-          <p>{artwork.description}</p>
-          <p>{artwork.medium}</p>
-          <p>{artwork.origin}</p>
-          <p>{artwork.styles}</p>
-          {artwork.exhibition_history && <p>{artwork.exhibition_history}</p>}
+          <h3>Creation: {artwork.creationDate}</h3>
+          {artwork.description && (
+            <p>
+              About:
+              {artwork.description?.split("\n\n").map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
+            </p>
+          )}
+          <p>Medium: {artwork.medium}</p>
+          <p>Culture: {artwork.origin || "Unknown"}</p>
+          <p>Classification: {artwork.styles}</p>
+          {artwork.exhibition_history && (
+            <ul>
+              Exhibition History:
+              {artwork.exhibition_history
+                ?.split(/\n\n|;\s*/)
+                .map((history, i) => (
+                  <li key={i}>
+                    {history.trim()}
+                    {!history.trim().endsWith(".") && "."}
+                  </li>
+                ))}
+            </ul>
+          )}
           <a
             href={artwork.museumLink}
             target="_blank"
