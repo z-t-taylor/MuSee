@@ -14,10 +14,12 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       >
         <img
           src={artwork.image?.imageURL}
-          alt={artwork.image?.alt_text || artwork.title}
+          alt={artwork.image?.altText || artwork.title}
           loading="lazy"
         />
-        <h2>{artwork.title}</h2>
+        <h2>
+          {artwork.title || "Untitled"} by {artwork.artist || "Unknown"}
+        </h2>
       </Link>
     </div>
   );

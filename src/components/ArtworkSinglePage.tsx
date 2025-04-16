@@ -36,6 +36,12 @@ export const ArtworkSinglePage: React.FC = () => {
     }
   }, [museumSource, id]);
 
+  function decodeHTMLEntities(text: string) {
+    const textArea = document.createElement("textarea");
+    textArea.innerHTML = text;
+    return textArea.value;
+  }
+
   return (
     <div className="artwork-single-page">
       {err ? (
@@ -45,37 +51,49 @@ export const ArtworkSinglePage: React.FC = () => {
       ) : (
         <>
           <h1>Title: {artwork.title}</h1>
-          <h2>Artist: {artwork.artist || "Unknown"}</h2>
           <img
             src={artwork.image?.imageURL}
-            alt={artwork.image?.alt_text || artwork.title}
+            alt={artwork.image?.altText || artwork.title}
             loading="lazy"
           />
+          <h2>Artist: {artwork.artist || "Unknown"}</h2>
           <h3>Creation: {artwork.creationDate}</h3>
-          {artwork.description && (
-            <p>
-              About:
-              {artwork.description?.split("\n\n").map((paragraph, i) => (
-                <p key={i}>{paragraph}</p>
-              ))}
-            </p>
-          )}
-          <p>Medium: {artwork.medium}</p>
-          <p>Culture: {artwork.origin || "Unknown"}</p>
-          <p>Classification: {artwork.styles}</p>
-          {artwork.exhibition_history && (
-            <ul>
-              Exhibition History:
-              {artwork.exhibition_history
-                ?.split(/\n\n|;\s*/)
-                .map((history, i) => (
-                  <li key={i}>
-                    {history.trim()}
-                    {!history.trim().endsWith(".") && "."}
-                  </li>
-                ))}
-            </ul>
-          )}
+          <div>
+            {artwork.description && (
+              <div className="artwork-description">
+                <p>About:</p>
+                {artwork.description
+                  .split("</p>")
+                  .map((chunk) =>
+                    chunk
+                      .replace(/<p>/g, "")
+                      .replace(/<em>/g, '"')
+                      .replace(/<\/em>/g, '"')
+                      .trim()
+                  )
+                  .filter(Boolean)
+                  .map((paragraph, i) => (
+                    <p key={i}>{decodeHTMLEntities(paragraph)}</p>
+                  ))}
+              </div>
+            )}
+            <p>Medium: {artwork.medium}</p>
+            <p>Culture: {artwork.origin || "Unknown"}</p>
+            <p>Classification: {artwork.styles}</p>
+            {artwork.exhibitionHistory && (
+              <ul>
+                Exhibition History:
+                {artwork.exhibitionHistory
+                  ?.split(/\n\n|;\s*/)
+                  .map((history, i) => (
+                    <li key={i}>
+                      {history.trim()}
+                      {!history.trim().endsWith(".") && "."}
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </div>
           <a
             href={artwork.museumLink}
             target="_blank"
