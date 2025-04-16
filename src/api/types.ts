@@ -5,14 +5,14 @@ export interface Artwork {
   creationDate?: string;
   image?: {
     imageURL?: string;
-    alt_text?: string;
+    altText?: string;
     thumbnail?: string;
   };
   medium?: string;
   origin?: string;
   styles?: string | string[];
   description?: string;
-  exhibition_history?: string;
+  exhibitionHistory?: string;
   museumSource: "aic" | "met";
   museumLink?: string;
 }
