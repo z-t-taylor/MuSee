@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { UserExhibitionArtwork } from "../api/userExhibition";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { ExhibitionSelectionModel } from "./ExhibitionSelectionModal";
+import { Artwork } from "../api/types";
 
 interface Props {
-  artwork: UserExhibitionArtwork;
+  artwork: Artwork;
   variant?: "button" | "icon";
 }
 
@@ -22,7 +22,11 @@ export const AddArtworkButton: React.FC<Props> = ({
   );
 
   const handleAdd = (exhibitionId?: string) => {
-    addArtwork(artwork, exhibitionId);
+    const artworkWithDate = {
+      ...artwork,
+      addedAt: new Date().toISOString(),
+    };
+    addArtwork(artworkWithDate, exhibitionId);
     setShowModal(false);
   };
 

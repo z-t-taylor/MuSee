@@ -1,6 +1,7 @@
 import React from "react";
 import { Artwork } from "../api/types";
 import { Link } from "react-router-dom";
+import { AddArtworkButton } from "./AddArtworkButton";
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -21,6 +22,7 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           {artwork.title || "Untitled"} by {artwork.artist || "Unknown"}
         </h2>
       </Link>
+      <AddArtworkButton artwork={artwork} variant="icon" />
     </div>
   );
 };

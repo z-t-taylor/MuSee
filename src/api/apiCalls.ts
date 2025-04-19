@@ -20,10 +20,12 @@ export const fetchAICArtworkList = async (
     `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail`
   );
 
+  const filteredData = response.data.data.filter(
+    (artwork) => artwork.image_id !== null && artwork.image_id !== ""
+  );
+
   const artworks = await Promise.all(
-    response.data.data.map((artwork) =>
-      fetchSingleAICArtwork(artwork.id.toString())
-    )
+    filteredData.map((artwork) => fetchSingleAICArtwork(artwork.id.toString()))
   );
   return artworks.filter((art): art is Artwork => art !== null);
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Artwork } from "../api/types";
 import { fetchAllArtworks } from "../api/apiCalls";
+import { AddArtworkButton } from "./AddArtworkButton";
 
 interface ArtworkIDParams {
   [key: string]: string | undefined;
@@ -56,6 +57,7 @@ export const ArtworkSinglePage: React.FC = () => {
             alt={artwork.image?.altText || artwork.title}
             loading="lazy"
           />
+          <AddArtworkButton artwork={artwork} variant="button" />
           <h2>Artist: {artwork.artist || "Unknown"}</h2>
           <h3>Creation: {artwork.creationDate}</h3>
           <div>
