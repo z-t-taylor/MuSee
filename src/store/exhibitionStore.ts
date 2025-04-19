@@ -1,20 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UserExhibitionArtwork } from "../api/userExhibition";
-
-interface Exhibition {
-  id: string;
-  name: string;
-  artworks: UserExhibitionArtwork[];
-  createdAt: Date;
-}
+import { UserExhibition, UserExhibitionArtwork } from "../api/userExhibition";
 
 interface ExhibitionStore {
-  exhibitions: Exhibition[];
+  exhibitions: UserExhibition[];
   selectedArtworks: UserExhibitionArtwork[];
   addArtwork: (artwork: UserExhibitionArtwork, exhibitionId?: string) => void;
   removeArtwork: (id: string) => void;
-  createExhibition: (name: string) => Exhibition;
+  createExhibition: (name: string) => UserExhibition;
 }
 
 export const userExhibitionStore = create<ExhibitionStore>()(
@@ -26,7 +19,7 @@ export const userExhibitionStore = create<ExhibitionStore>()(
         if (exhibitionId) {
           set({
             exhibitions: get().exhibitions.map((exhibition) =>
-              exhibition.id === exhibitionId
+              exhibition.exhibitionId === exhibitionId
                 ? { ...exhibition, artworks: [...exhibition.artworks, artwork] }
                 : exhibition
             ),
@@ -46,11 +39,12 @@ export const userExhibitionStore = create<ExhibitionStore>()(
           })),
         }),
       createExhibition: (name) => {
-        const newExhibition: Exhibition = {
-          id: crypto.randomUUID(),
-          name,
+        const newExhibition: UserExhibition = {
+          exhibitionId: crypto.randomUUID(),
+          title: name,
           artworks: [],
           createdAt: new Date(),
+          updatedAt: new Date(),
         };
         set({ exhibitions: [...get().exhibitions, newExhibition] });
         return newExhibition;
