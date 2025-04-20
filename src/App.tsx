@@ -5,11 +5,13 @@ import { ArtworkList } from "./components/ArtworkList";
 import { ArtworkSinglePage } from "./components/ArtworkSinglePage";
 import { ExhibitionList } from "./components/ExhibitionList";
 import { userExhibitionStore } from "./store/exhibitionStore";
+import { Header } from "./components/Header";
 
 export const App: React.FC = () => {
   const exhibitions = userExhibitionStore((state) => state.exhibitions);
   return (
     <Routes>
+      <Header />
       <Route path="/" element={<ArtworkList />} />
       <Route
         path="/artwork/:museumSource/:id"
