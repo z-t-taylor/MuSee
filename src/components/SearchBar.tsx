@@ -14,6 +14,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSearch(searchInput);
+  };
+
+  const handleClear = () => {
     setSearchInput("");
   };
 
@@ -28,6 +31,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           className="p-2 border border-gray-300 rounded w-full"
         />
       </form>
+      {searchInput && (
+        <button
+          type="button"
+          onClick={handleClear}
+          aria-label="Clear search"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+        >
+          X
+        </button>
+      )}
     </div>
   );
 };
