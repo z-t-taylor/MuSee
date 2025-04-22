@@ -10,17 +10,19 @@ import { Header } from "./components/Header";
 export const App: React.FC = () => {
   const exhibitions = userExhibitionStore((state) => state.exhibitions);
   return (
-    <Routes>
+    <>
       <Header />
-      <Route path="/" element={<ArtworkList />} />
-      <Route
-        path="/artwork/:museumSource/:id"
-        element={<ArtworkSinglePage />}
-      />
-      <Route
-        path="/exhibitions"
-        element={<ExhibitionList exhibitions={exhibitions} />}
-      />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<ArtworkList />} />
+        <Route
+          path="/artwork/:museumSource/:id"
+          element={<ArtworkSinglePage />}
+        />
+        <Route
+          path="/exhibitions"
+          element={<ExhibitionList exhibitions={exhibitions} />}
+        />
+      </Routes>
+    </>
   );
 };
