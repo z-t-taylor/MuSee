@@ -20,7 +20,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
     const filteredExhibitions = exhibitions?.filter((exhibition) => {
       exhibition.title.toLowerCase().includes(query.toLowerCase());
     });
-    setFilter(filteredExhibitions);
+    setFilter(filteredExhibitions || []);
   };
   return (
     <div>
