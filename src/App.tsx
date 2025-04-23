@@ -6,6 +6,7 @@ import { ArtworkSinglePage } from "./components/ArtworkSinglePage";
 import { ExhibitionList } from "./components/ExhibitionList";
 import { userExhibitionStore } from "./store/exhibitionStore";
 import { Header } from "./components/Header";
+import { ExhibitionPage } from "./components/ExhibitionPage";
 
 export const App: React.FC = () => {
   const exhibitions = userExhibitionStore((state) => state.exhibitions);
@@ -22,6 +23,7 @@ export const App: React.FC = () => {
           path="/exhibitions"
           element={<ExhibitionList exhibitions={exhibitions} />}
         />
+        <Route path="/exhibitions/:exhibitionId" element={<ExhibitionPage />} />
       </Routes>
     </>
   );

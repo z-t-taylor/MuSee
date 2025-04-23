@@ -3,12 +3,14 @@ import { Artwork } from "../api/types";
 import { fetchAllArtworks, searchAllArtworks } from "../api/apiCalls";
 import { ArtworkCard } from "./ArtworkCard";
 import { SearchBar } from "./SearchBar";
+import { ViewToggle } from "./ViewToggle";
 
 export const ArtworkList: React.FC = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [err, setErr] = useState<Error | null>(null);
   const [results, setResults] = useState<Artwork[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const artworksPerPage = 12;
   const artToShow = results ?? artworks;
@@ -42,10 +44,21 @@ export const ArtworkList: React.FC = () => {
     <div className="artwork-list">
       <SearchBar onSearch={handleSearch} placeholder="Search artworks..." />
       {err && <p>Error: {err.message}</p>}
+      <div>
+        <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+      </div>
       {artworks.length === 0 && !err && <p>Loading..</p>}
-      {currentArtworks.map((art) => (
-        <ArtworkCard key={art.id} artwork={art} />
-      ))}
+      <div
+        className={
+          viewMode === "grid"
+            ? "grid grid-cols-2 md:grid-cols-4 gap-4"
+            : "flex flex-col gap-4"
+        }
+      >
+        {currentArtworks.map((art) => (
+          <ArtworkCard key={art.id} artwork={art} />
+        ))}
+      </div>
       <div className="flex justify-center gap-4 mt-4">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
