@@ -27,14 +27,14 @@ export const adaptMetToArtwork = (item: MetSingleArtworkResponse): Artwork => ({
   creationDate: item.objectDate,
   image: {
     imageURL: item.primaryImage || item.primaryImageSmall,
-    alt_text: `${item.title} by ${item.artistDisplayName}`,
+    altText: `${item.title} by ${item.artistDisplayName}`,
     thumbnail: item.primaryImageSmall,
   },
   medium: item.medium,
   origin: item.country || item.artistNationality,
   styles: item.classification,
   description: item.artistDisplayBio || undefined,
-  exhibition_history: undefined,
+  exhibitionHistory: undefined,
   museumSource: "met",
   museumLink: item.objectURL,
 });
