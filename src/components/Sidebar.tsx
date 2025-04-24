@@ -12,7 +12,7 @@ export const Sidebar = () => {
   const iconActive = "text-[#0C49B8]";
 
   return (
-    <aside className="w-64 h-full bg-white shadow-md p-4 flex flex-col justify-start">
+    <aside className="w-59 h-full bg-white shadow-md p-2 pl-6 pt-4 flex flex-col justify-start">
       <nav className="flex flex-col gap-2">
         <NavLink
           to="/"

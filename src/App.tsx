@@ -16,7 +16,7 @@ export const App: React.FC = () => {
       <Header />
       <div className="flex flex-1 h-full overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pl-6 pr-6 py-4">
           <Routes>
             <Route path="/" element={<ArtworkList />} />
             <Route
