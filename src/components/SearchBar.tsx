@@ -21,26 +21,29 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder={placeholder}
-          className="p-2 border border-gray-300 rounded w-full"
-        />
+    <>
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="relative w-full">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={placeholder}
+            className="p-2 pr-10 pl-8 border border-gray-300 rounded-[2vw] w-full"
+          />
+
+          {searchInput && (
+            <button
+              type="button"
+              onClick={handleClear}
+              aria-label="Clear search"
+              className="absolute pr-2 right-3 top-1/2 transform -translate-y-1/2 text-black-75"
+            >
+              X
+            </button>
+          )}
+        </div>
       </form>
-      {searchInput && (
-        <button
-          type="button"
-          onClick={handleClear}
-          aria-label="Clear search"
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
-        >
-          X
-        </button>
-      )}
-    </div>
+    </>
   );
 };
