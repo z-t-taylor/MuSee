@@ -19,9 +19,9 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
   }, [exhibitions]);
 
   const handleSearch = (query: string) => {
-    const filteredExhibitions = exhibitions?.filter((exhibition) => {
-      exhibition.title.toLowerCase().includes(query.toLowerCase());
-    });
+    const filteredExhibitions = exhibitions?.filter((exhibition) =>
+      exhibition.title.toLowerCase().includes(query.toLowerCase())
+    );
     setFilter(filteredExhibitions || []);
   };
   return (
