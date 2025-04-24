@@ -8,6 +8,7 @@ interface ExhibitionStore {
   addArtwork: (artwork: UserExhibitionArtwork, exhibitionId?: string) => void;
   removeArtwork: (id: string) => void;
   createExhibition: (name: string) => UserExhibition;
+  removeExhibition: (exhibitionId: string) => void;
 }
 
 export const userExhibitionStore = create<ExhibitionStore>()(
@@ -48,6 +49,13 @@ export const userExhibitionStore = create<ExhibitionStore>()(
         };
         set({ exhibitions: [...get().exhibitions, newExhibition] });
         return newExhibition;
+      },
+      removeExhibition: (exhibitionId) => {
+        set({
+          exhibitions: get().exhibitions.filter(
+            (exhibition) => exhibition.exhibitionId !== exhibitionId
+          ),
+        });
       },
     }),
     {
