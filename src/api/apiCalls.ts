@@ -6,6 +6,8 @@ import {
 } from "./aic";
 import { Artwork } from "./types";
 import { adaptMetToArtwork, MetAPIBaseResponse } from "./met";
+import { checkImageExists } from "../util/checkImageExists";
+import { filteredValidImages } from "../util/filteredValidImages";
 
 const apiAIC = axios.create({
   baseURL: "https://api.artic.edu/api/v1/artworks",
@@ -27,7 +29,11 @@ export const fetchAICArtworkList = async (
   const artworks = await Promise.all(
     filteredData.map((artwork) => fetchSingleAICArtwork(artwork.id.toString()))
   );
-  return artworks.filter((art): art is Artwork => art !== null);
+  const withImage = artworks.filter((art): art is Artwork => art !== null);
+  return await filteredValidImages(
+    withImage,
+    (artwork) => artwork.image.imageURL
+  );
 };
 
 const fetchSingleAICArtwork = async (id: string): Promise<Artwork | null> => {
@@ -37,6 +43,10 @@ const fetchSingleAICArtwork = async (id: string): Promise<Artwork | null> => {
     );
 
     const data = response.data.data;
+    const imageUrl = `https://www.artic.edu/iiif/2/${data.image_id}/full/843,/0/default.jpg`;
+
+    const imageExists = await checkImageExists(imageUrl);
+    if (!imageExists) return null;
 
     const formattedStyles = Array.isArray(data.style_titles)
       ? data.style_titles.join(", ")
@@ -69,7 +79,11 @@ const searchAICArtworks = async (
   const artworks = await Promise.all(
     filtered.map((artwork) => fetchSingleAICArtwork(artwork.id.toString()))
   );
-  return artworks.filter((art): art is Artwork => art !== null);
+  const withImage = artworks.filter((art): art is Artwork => art !== null);
+  return await filteredValidImages(
+    withImage,
+    (artwork) => artwork.image.imageURL
+  );
 };
 
 const apiMet = axios.create({
@@ -112,7 +126,13 @@ export const fetchMetArtworkList = async (
       })
     );
 
-    return artworks.filter((art): art is Artwork => art !== null);
+    const validArtworks = artworks.filter(
+      (art): art is Artwork => art !== null
+    );
+    return await filteredValidImages(
+      validArtworks,
+      (artwork) => artwork.image.imageURL
+    );
   } catch (error) {
     console.log(`Error: ${error}`);
     return [];
@@ -141,7 +161,13 @@ const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
       })
     );
 
-    return artworks.filter((art): art is Artwork => art !== null);
+    const validArtworks = artworks.filter(
+      (art): art is Artwork => art !== null
+    );
+    return await filteredValidImages(
+      validArtworks,
+      (artwork) => artwork.image.imageURL
+    );
   } catch (error) {
     console.log(`Error: ${error}`);
     return [];

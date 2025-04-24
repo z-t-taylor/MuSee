@@ -3,8 +3,8 @@ export interface Artwork {
   title: string;
   artist?: string;
   creationDate?: string;
-  image?: {
-    imageURL?: string;
+  image: {
+    imageURL: string;
     altText?: string;
     thumbnail?: string;
   };
