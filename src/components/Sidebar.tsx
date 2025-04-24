@@ -7,8 +7,8 @@ export const Sidebar = () => {
     "flex flex-col items-center gap-1 px-4 py-2 hover:bg-gray-100 rounded transition-colors text-sm";
 
   const iconBase = "transition-colors";
-  const iconColor = "text-[#0A3D91]";
-  const iconHover = "group-hover:text-[#0C49B8]";
+  const iconColor = "text-[#195183]";
+  const iconHover = "group-hover:text-[#B63900]";
   const iconActive = "text-[#0C49B8]";
 
   return (
@@ -27,7 +27,7 @@ export const Sidebar = () => {
                   isActive ? iconActive : ""
                 }`}
               />
-              <h2>Home</h2>
+              <h2 className="text-[#195183] hover:text-[#B63900]">Home</h2>
             </>
           )}
         </NavLink>
@@ -45,7 +45,9 @@ export const Sidebar = () => {
                   isActive ? iconActive : ""
                 }`}
               />
-              <h2>Exhibitions</h2>
+              <h2 className="text-[#195183] hover:text-[#B63900]">
+                Exhibitions
+              </h2>
             </>
           )}
         </NavLink>

@@ -44,12 +44,12 @@ export const AddArtworkButton: React.FC<Props> = ({
             ? `px-4 py-2 rounded ${
                 isAlreadyExhibited
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-[#195183] hover:bg-blue-700"
               }`
             : `p-2 rounded-full ${
                 isAlreadyExhibited
                   ? "text-gray-400"
-                  : "text-blue-600 hover:bg-blue-50"
+                  : "text-[#195183] hover:bg-blue-50"
               }`
         }
         aria-label={
@@ -63,7 +63,9 @@ export const AddArtworkButton: React.FC<Props> = ({
             "Add to Exhibition"
           )
         ) : (
-          <p>+</p>
+          <div className="border-[#195183]-500">
+            <p className="text-[#195183] pl-4 pr-4 p-2">Add +</p>
+          </div>
         )}
       </button>
       <ExhibitionSelectionModel

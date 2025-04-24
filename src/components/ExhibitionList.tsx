@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { UserExhibition } from "../api/userExhibition";
-import ExhibitionCard from "./ExhibitionCard";
+import { ExhibitionCard } from "./ExhibitionCard";
 import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
 
@@ -30,14 +30,14 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
         onSearch={handleSearch}
         placeholder="Search for exhibitions..."
       />
-      <div>
+      <div className="flex justify-end pt-2">
         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
       </div>
       <div
         className={
           viewMode === "grid"
-            ? "grid grid-cols-2 md:grid-cols-4 gap-4"
-            : "flex flex-col gap-4"
+            ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
+            : "flex flex-col gap-4 items-center my-auto"
         }
       >
         {filter.map((exhibition) => (

@@ -47,7 +47,7 @@ export const ExhibitionPage: React.FC = () => {
             to={"/"}
             className="text-blue-600 underline hover:text-blue-800"
           >
-            Click here to add to ${exhibition.title}
+            <p>{`Click here to add to ${exhibition.title}`}</p>
           </Link>
         </p>
       ) : (

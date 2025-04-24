@@ -5,8 +5,17 @@ import { AddArtworkButton } from "./AddArtworkButton";
 
 interface ArtworkCardProps {
   artwork: Artwork;
+  viewMode: "grid" | "list";
 }
-export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
+export const ArtworkCard: React.FC<ArtworkCardProps> = ({
+  artwork,
+  viewMode,
+}) => {
+  const imageClass =
+    viewMode === "grid"
+      ? "w-full h-[300px] object-cover rounded"
+      : "w-[300px] h-[300px] object-contain rounded";
+
   return (
     <div className="artwork-card">
       <Link
@@ -21,12 +30,15 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
             e.currentTarget.src = "MuSee/public/mona-lisa placeholder.png";
           }}
           loading="lazy"
+          className={imageClass}
         />
-        <h2>
+        <h2 className="items-center w-[300px]">
           {artwork.title || "Untitled"} by {artwork.artist || "Unknown"}
         </h2>
       </Link>
-      <AddArtworkButton artwork={artwork} variant="icon" />
+      <div className="flex justify-end pt-2">
+        <AddArtworkButton artwork={artwork} variant="icon" />
+      </div>
     </div>
   );
 };

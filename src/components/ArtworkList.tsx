@@ -44,19 +44,19 @@ export const ArtworkList: React.FC = () => {
     <div className="artwork-list">
       <SearchBar onSearch={handleSearch} placeholder="Search artworks..." />
       {err && <p>Error: {err.message}</p>}
-      <div>
+      <div className="flex justify-end pt-2">
         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
       </div>
       {artworks.length === 0 && !err && <p>Loading..</p>}
       <div
         className={
           viewMode === "grid"
-            ? "grid grid-cols-2 md:grid-cols-4 gap-4"
-            : "flex flex-col gap-4"
+            ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
+            : "flex flex-col gap-4 items-center my-auto"
         }
       >
         {currentArtworks.map((art) => (
-          <ArtworkCard key={art.id} artwork={art} />
+          <ArtworkCard key={art.id} artwork={art} viewMode={viewMode} />
         ))}
       </div>
       <div className="flex justify-center gap-4 mt-4">
