@@ -27,6 +27,10 @@ export const AddArtworkButton: React.FC<Props> = ({
       addedAt: new Date().toISOString(),
     };
     addArtwork(artworkWithDate, exhibitionId);
+    console.log(
+      "Store exhibitions after add:",
+      userExhibitionStore.getState().exhibitions
+    );
     setShowModal(false);
   };
 

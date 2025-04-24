@@ -83,10 +83,19 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
             onClick={() => {
               if (newExhibitionName) {
                 const exhibition = createExhibition(newExhibitionName);
+                console.log("Created new exhibition:", exhibition);
                 onAddToExhibition(exhibition.exhibitionId);
               } else if (selectedExhibitionId) {
+                console.log(
+                  "Adding to existing exhibition:",
+                  selectedExhibitionId
+                );
                 onAddToExhibition(selectedExhibitionId);
               }
+              console.log(
+                "Exhibitions in store now:",
+                userExhibitionStore.getState().exhibitions
+              );
             }}
             disabled={!newExhibitionName && !selectedExhibitionId}
             className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-blue-300"
