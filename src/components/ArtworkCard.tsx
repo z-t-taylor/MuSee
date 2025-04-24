@@ -16,6 +16,10 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         <img
           src={artwork.image?.imageURL}
           alt={artwork.image?.altText || artwork.title}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "MuSee/public/mona-lisa placeholder.png";
+          }}
           loading="lazy"
         />
         <h2>
