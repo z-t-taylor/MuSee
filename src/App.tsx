@@ -12,21 +12,28 @@ import { Sidebar } from "./components/Sidebar";
 export const App: React.FC = () => {
   const exhibitions = userExhibitionStore((state) => state.exhibitions);
   return (
-    <>
+    <div className="flex h-screen flex-col">
       <Header />
-      <Sidebar />
-      <Routes>
-        <Route path="/" element={<ArtworkList />} />
-        <Route
-          path="/artwork/:museumSource/:id"
-          element={<ArtworkSinglePage />}
-        />
-        <Route
-          path="/exhibitions"
-          element={<ExhibitionList exhibitions={exhibitions} />}
-        />
-        <Route path="/exhibitions/:exhibitionId" element={<ExhibitionPage />} />
-      </Routes>
-    </>
+      <div className="flex flex-1 h-full overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto">
+          <Routes>
+            <Route path="/" element={<ArtworkList />} />
+            <Route
+              path="/artwork/:museumSource/:id"
+              element={<ArtworkSinglePage />}
+            />
+            <Route
+              path="/exhibitions"
+              element={<ExhibitionList exhibitions={exhibitions} />}
+            />
+            <Route
+              path="/exhibitions/:exhibitionId"
+              element={<ExhibitionPage />}
+            />
+          </Routes>
+        </main>
+      </div>
+    </div>
   );
 };

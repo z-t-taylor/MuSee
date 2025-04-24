@@ -4,7 +4,7 @@ import CollectionsOutlinedIcon from "@mui/icons-material/CollectionsOutlined";
 
 export const Sidebar = () => {
   const linkClass =
-    "flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded transition-colors";
+    "flex flex-col items-center gap-1 px-4 py-2 hover:bg-gray-100 rounded transition-colors text-sm";
 
   const iconBase = "transition-colors";
   const iconColor = "text-[#0A3D91]";
@@ -12,7 +12,7 @@ export const Sidebar = () => {
   const iconActive = "text-[#0C49B8]";
 
   return (
-    <aside className="w-64 h-full fixed left-0 top-0 bg-white shadow-md p-4">
+    <aside className="w-64 h-full bg-white shadow-md p-4 flex flex-col justify-start">
       <nav className="flex flex-col gap-2">
         <NavLink
           to="/"
@@ -45,7 +45,7 @@ export const Sidebar = () => {
                   isActive ? iconActive : ""
                 }`}
               />
-              <h2>My Exhibitions</h2>
+              <h2>Exhibitions</h2>
             </>
           )}
         </NavLink>
