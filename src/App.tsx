@@ -7,12 +7,14 @@ import { ExhibitionList } from "./components/ExhibitionList";
 import { userExhibitionStore } from "./store/exhibitionStore";
 import { Header } from "./components/Header";
 import { ExhibitionPage } from "./components/ExhibitionPage";
+import { Sidebar } from "./components/Sidebar";
 
 export const App: React.FC = () => {
   const exhibitions = userExhibitionStore((state) => state.exhibitions);
   return (
     <>
       <Header />
+      <Sidebar />
       <Routes>
         <Route path="/" element={<ArtworkList />} />
         <Route

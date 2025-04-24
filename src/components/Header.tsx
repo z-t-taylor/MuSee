@@ -5,12 +5,11 @@ export const Header = () => {
     <div>
       <header>
         <div>
-          <p>MuSee</p> {/*placeholder for logo*/}
+          <Link to="/">
+            <p>MuSee</p>
+          </Link>{" "}
+          {/*placeholder for logo*/}
         </div>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/exhibitions">My Exhibitions</Link>
-        </nav>
       </header>
     </div>
   );
