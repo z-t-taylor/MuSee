@@ -14,7 +14,7 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
   const imageClass =
     viewMode === "grid"
       ? "w-full h-[300px] object-cover rounded"
-      : "w-[300px] h-[300px] object-contain rounded";
+      : "w-[300px] h-full object-contain rounded";
 
   return (
     <div className="artwork-card">
