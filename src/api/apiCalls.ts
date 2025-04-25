@@ -19,11 +19,14 @@ export const fetchAICArtworkList = async (
 ): Promise<Artwork[]> => {
   const offset = (page - 1) * limit;
   const response = await apiAIC.get<AICArtworkListResponse>(
-    `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail`
+    `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles`
   );
 
   const filteredData = response.data.data.filter(
-    (artwork) => artwork.image_id !== null && artwork.image_id !== ""
+    (artwork) =>
+      artwork.image_id !== null &&
+      artwork.image_id !== "" &&
+      artwork.category_titles?.includes("AIC Archives")
   );
 
   const artworks = await Promise.all(
@@ -68,13 +71,16 @@ const searchAICArtworks = async (
   const response = await apiAIC.get<AICArtworkListResponse>(
     `/search?q=${encodeURIComponent(
       query
-    )}&fields=id,title,artist_display,image_id,date_display,thumbnail&limit=${limit}&offset=${offset}`
+    )}&fields=id,title,artist_display,image_id,date_display,category_titles,thumbnail&limit=${limit}&offset=${offset}`
   );
 
   if (!response.data.data.length) return [];
 
   const filtered = response.data.data.filter(
-    (artwork) => artwork.image_id !== null && artwork.image_id !== ""
+    (artwork) =>
+      artwork.image_id !== null &&
+      artwork.image_id !== "" &&
+      artwork.category_titles?.includes("AIC Archives")
   );
   const artworks = await Promise.all(
     filtered.map((artwork) => fetchSingleAICArtwork(artwork.id.toString()))

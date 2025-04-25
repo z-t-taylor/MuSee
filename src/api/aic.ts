@@ -10,6 +10,7 @@ interface AICArtworkBaseResponse {
   };
   image_id: string;
   date_display: string | undefined;
+  category_titles?: string[];
 }
 
 export interface AICSingleArtworkResponse {
