@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
+import logo from "../assets/logo2.svg";
 
 export const Header = () => {
   return (
-    <div>
-      <header>
-        <div>
-          <Link to="/">
-            <p>MuSee</p>
-          </Link>{" "}
-          {/*placeholder for logo*/}
-        </div>
-      </header>
-    </div>
+    <header className="border-b-2 flex justify-center pl-1">
+      <div>
+        <Link to="/">
+          <img src={logo} alt="Musee logo" className="w-[100px]" />
+        </Link>{" "}
+      </div>
+    </header>
   );
 };
