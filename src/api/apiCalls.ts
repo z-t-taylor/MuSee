@@ -21,12 +21,9 @@ export const fetchAICArtworkList = async (
   const response = await apiAIC.get<AICArtworkListResponse>(
     `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles`
   );
-
+  console.log("AIC Response:", response.data);
   const filteredData = response.data.data.filter(
-    (artwork) =>
-      artwork.image_id !== null &&
-      artwork.image_id !== "" &&
-      artwork.category_titles?.includes("AIC Archives")
+    (artwork) => artwork.image_id !== null && artwork.image_id !== ""
   );
 
   const artworks = await Promise.all(
@@ -49,7 +46,9 @@ const fetchSingleAICArtwork = async (id: string): Promise<Artwork | null> => {
     const imageUrl = `https://www.artic.edu/iiif/2/${data.image_id}/full/843,/0/default.jpg`;
 
     const imageExists = await checkImageExists(imageUrl);
-    if (!imageExists) return null;
+    if (!imageExists) {
+      return null;
+    }
 
     const formattedStyles = Array.isArray(data.style_titles)
       ? data.style_titles.join(", ")
