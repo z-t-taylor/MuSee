@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SearchSharpIcon from "@mui/icons-material/SearchSharp";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -29,7 +30,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={placeholder}
-            className="p-2 pr-10 pl-8 border border-gray-300 rounded-[2vw] w-full"
+            className="p-2 pr-16 pl-8 border border-gray-300 rounded-[2vw] w-full"
           />
 
           {searchInput && (
@@ -37,11 +38,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               type="button"
               onClick={handleClear}
               aria-label="Clear search"
-              className="absolute pr-2 right-3 top-1/2 transform -translate-y-1/2 text-black-75"
+              className="absolute right-16 top-1/2 transform -translate-y-1/2 text-black-75"
             >
               X
             </button>
           )}
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#195183] text-white px-3 py-1 text-sm rounded-[1vw] hover:bg-gray-500"
+          >
+            <SearchSharpIcon />
+          </button>
         </div>
       </form>
     </>
