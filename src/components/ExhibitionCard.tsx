@@ -22,7 +22,7 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   return (
     <div className="flex flex-col items-center gap-4 border-2 rounded pt-1 pb-3 px-4 text-center">
       <Link
-        to={`/exhibitions/${exhibition.exhibitionId}`}
+        to={`/exhibitions/${exhibition.slug}`}
         className="w-full"
         aria-label={`select ${exhibition.title} exhibition`}
       >

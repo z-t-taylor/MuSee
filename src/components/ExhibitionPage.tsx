@@ -3,12 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { ViewToggle } from "./ViewToggle";
 
-interface ExhibitionIdParams {
-  [key: string]: string;
-}
-
 export const ExhibitionPage: React.FC = () => {
-  const { id } = useParams<ExhibitionIdParams>();
+  const { slug } = useParams<{ slug: string }>();
   const exhibitions = userExhibitionStore((state) => state.exhibitions);
   const removeArtwork = userExhibitionStore((state) => state.removeArtwork);
   const removeExhibition = userExhibitionStore(
@@ -16,8 +12,10 @@ export const ExhibitionPage: React.FC = () => {
   );
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
-  const exhibition = exhibitions.find((exhibit) => exhibit.exhibitionId === id);
-  if (!exhibition) return <div>Exhibition not found</div>;
+  const exhibition = exhibitions.find((exhibit) => exhibit.slug === slug);
+  if (exhibitions.length > 0 && !exhibition)
+    return <div>Exhibition not found</div>;
+  if (!exhibition) return <div>Loading exhibition...</div>;
 
   const handleRemove = (artworkId: string) => {
     removeArtwork(artworkId);

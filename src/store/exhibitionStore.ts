@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { UserExhibition, UserExhibitionArtwork } from "../api/userExhibition";
+import { generateUniqueSlug } from "../util/generateUniqueSlug";
 
 interface ExhibitionStore {
   exhibitions: UserExhibition[];
@@ -21,7 +22,11 @@ export const userExhibitionStore = create<ExhibitionStore>()(
           set({
             exhibitions: get().exhibitions.map((exhibition) =>
               exhibition.exhibitionId === exhibitionId
-                ? { ...exhibition, artworks: [...exhibition.artworks, artwork] }
+                ? {
+                    ...exhibition,
+                    artworks: [...exhibition.artworks, artwork],
+                    updatedAt: new Date(),
+                  }
                 : exhibition
             ),
           });
@@ -39,13 +44,16 @@ export const userExhibitionStore = create<ExhibitionStore>()(
             artworks: ex.artworks.filter((art) => art.id !== id),
           })),
         }),
-      createExhibition: (name) => {
+      createExhibition: (title: string) => {
+        const duplicateSlug = get().exhibitions.map((ex) => ex.slug ?? "");
+        const slug = generateUniqueSlug(title, duplicateSlug);
         const newExhibition: UserExhibition = {
           exhibitionId: crypto.randomUUID(),
-          title: name,
+          title,
           artworks: [],
           createdAt: new Date(),
           updatedAt: new Date(),
+          slug,
         };
         set({ exhibitions: [...get().exhibitions, newExhibition] });
         return newExhibition;

@@ -8,7 +8,7 @@ export interface UserExhibition {
   createdAt: Date;
   updatedAt: Date;
   userId?: string;
-  slug?: string;
+  slug: string;
 }
 
 export interface UserExhibitionArtwork extends Artwork {

@@ -27,10 +27,7 @@ export const App: React.FC = () => {
               path="/exhibitions"
               element={<ExhibitionList exhibitions={exhibitions} />}
             />
-            <Route
-              path="/exhibitions/:exhibitionId"
-              element={<ExhibitionPage />}
-            />
+            <Route path="/exhibitions/:slug" element={<ExhibitionPage />} />
           </Routes>
         </main>
       </div>
