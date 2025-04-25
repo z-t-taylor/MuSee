@@ -21,7 +21,7 @@ export const fetchAICArtworkList = async (
   const response = await apiAIC.get<AICArtworkListResponse>(
     `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles`
   );
-  console.log("AIC Response:", response.data);
+
   const filteredData = response.data.data.filter(
     (artwork) => artwork.image_id !== null && artwork.image_id !== ""
   );
