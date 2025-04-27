@@ -4,6 +4,8 @@ import { fetchAllArtworks, searchAllArtworks } from "../api/apiCalls";
 import { ArtworkCard } from "./ArtworkCard";
 import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
+import { getPageNumbers } from "../util/getPageNumbers";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const ArtworkList: React.FC = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -11,6 +13,8 @@ export const ArtworkList: React.FC = () => {
   const [results, setResults] = useState<Artwork[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [loading, setLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   const artworksPerPage = 12;
   const artToShow = results ?? artworks;
@@ -18,48 +22,83 @@ export const ArtworkList: React.FC = () => {
   const firstItemIndex = lastItemIndex - artworksPerPage;
   const currentArtworks = artToShow.slice(firstItemIndex, lastItemIndex);
 
+  useEffect(() => {
+    if (!isSearching) {
+      const getArtworks = async () => {
+        setLoading(true);
+        try {
+          const art = await fetchAllArtworks();
+          setArtworks(art);
+          setLoading(false);
+        } catch (error) {
+          setErr(error as Error);
+        }
+      };
+      getArtworks();
+    }
+  }, [currentPage, isSearching]);
+
   const handleSearch = async (query: string) => {
+    setLoading(true);
     try {
       const results = await searchAllArtworks(query);
+      setIsSearching(true);
       setCurrentPage(1);
       setResults(results);
+      setLoading(false);
     } catch (error) {
       setErr(error as Error);
     }
   };
 
-  useEffect(() => {
-    const getArtworks = async () => {
-      try {
-        const art = await fetchAllArtworks();
-        setArtworks(art);
-      } catch (error) {
-        setErr(error as Error);
-      }
-    };
-    getArtworks();
-  }, []);
+  const handleClearSearch = () => {
+    setResults(null);
+    setIsSearching(false);
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.ceil(artToShow.length / artworksPerPage);
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
     <div className="artwork-list">
       <SearchBar onSearch={handleSearch} placeholder="Search artworks..." />
+      {isSearching && (
+        <div className="flex justify-end mt-2">
+          <button
+            onClick={handleClearSearch}
+            className="px-4 py-2 bg-gray-200 rounded"
+          >
+            Clear Search
+          </button>
+        </div>
+      )}
       {err && <p>Error: {err.message}</p>}
       <div className="flex justify-end pt-2">
         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
       </div>
-      {artworks.length === 0 && !err && <p>Loading..</p>}
-      <div
-        className={
-          viewMode === "grid"
-            ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
-            : "flex flex-col gap-4 items-center my-auto"
-        }
-      >
-        {currentArtworks.map((art) => (
-          <ArtworkCard key={art.id} artwork={art} viewMode={viewMode} />
-        ))}
-      </div>
-      <div className="flex justify-center gap-4 mt-4">
+
+      {loading ? (
+        <div className="flex justify-center mt-4">
+          <CircularProgress />
+        </div>
+      ) : currentArtworks.length === 0 && !err ? (
+        <p className="flex justify-center pb-12">Sorry, no artworks found. </p>
+      ) : (
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
+              : "flex flex-col gap-4 items-center my-auto"
+          }
+        >
+          {currentArtworks.map((art) => (
+            <ArtworkCard key={art.id} artwork={art} viewMode={viewMode} />
+          ))}
+        </div>
+      )}
+
+      <div className="flex justify-center items-center gap-4 mt-4">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
@@ -68,15 +107,32 @@ export const ArtworkList: React.FC = () => {
           Previous
         </button>
 
-        <span>Page {currentPage}</span>
+        <div className="flex items-center gap-2">
+          {pageNumbers.map((page, index) => (
+            <div key={index}>
+              {page === "..." ? (
+                <span className="px-2">...</span>
+              ) : (
+                <button
+                  onClick={() => setCurrentPage(Number(page))}
+                  className={`px-3 py-1 border rounded ${
+                    page === currentPage ? "bg-gray-300" : ""
+                  }`}
+                >
+                  {page}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
 
         <button
           onClick={() =>
             setCurrentPage((prev) =>
-              lastItemIndex < artToShow.length ? prev + 1 : prev
+              currentPage < totalPages ? prev + 1 : prev
             )
           }
-          disabled={lastItemIndex >= artToShow.length}
+          disabled={currentPage === totalPages}
           className="px-4 py-2 border rounded disabled:opacity-50"
         >
           Next

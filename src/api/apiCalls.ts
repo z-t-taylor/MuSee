@@ -112,24 +112,38 @@ export const fetchMetArtworkList = async (
 
     if (!searchData.objectIDs?.length) return [];
 
-    const artworks = await Promise.all(
-      searchData.objectIDs.slice(0, 12).map(async (id) => {
-        try {
-          const { data } = await apiMet.get(`/objects/${id}`);
+    let artworks: (Artwork | null)[] = [];
+    let totalValidArtworks = 0;
+    let currentIndex = 0;
 
-          if (data?.message === "Not a valid object") {
-            return null;
-          }
+    while (
+      totalValidArtworks < 12 &&
+      currentIndex < searchData.objectIDs.length
+    ) {
+      const id = searchData.objectIDs[currentIndex];
 
-          return data?.isPublicDomain && data?.primaryImage
-            ? adaptMetToArtwork(data)
-            : null;
-        } catch (error) {
-          console.log(`Error: ${error}`);
-          return null;
+      try {
+        const { data } = await apiMet.get(`/objects/${id}`);
+
+        if (data?.message === "Not a valid object") {
+          artworks.push(null);
+        } else if (data?.isPublicDomain && data?.primaryImage) {
+          artworks.push(adaptMetToArtwork(data));
+        } else {
+          artworks.push(null);
         }
-      })
-    );
+      } catch (error) {
+        console.log(`Error fetching object ${id}: ${error}`);
+        artworks.push(null);
+      }
+
+      currentIndex++;
+
+      const validArtworks = artworks.filter(
+        (art): art is Artwork => art !== null
+      );
+      totalValidArtworks = validArtworks.length;
+    }
 
     const validArtworks = artworks.filter(
       (art): art is Artwork => art !== null
