@@ -15,12 +15,12 @@ export const ArtworkList: React.FC = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [loading, setLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
+  const [sortOption, setSortOption] = useState<
+    "title-asc" | "title-desc" | "date-asc" | "date-desc"
+  >("title-asc");
 
-  const artworksPerPage = 12;
+  const artworksPerPage = 16;
   const artToShow = results ?? artworks;
-  const lastItemIndex = currentPage * artworksPerPage;
-  const firstItemIndex = lastItemIndex - artworksPerPage;
-  const currentArtworks = artToShow.slice(firstItemIndex, lastItemIndex);
 
   useEffect(() => {
     if (!isSearching) {
@@ -57,6 +57,31 @@ export const ArtworkList: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const sortedArtToShow = [...artToShow].sort((a, b) => {
+    switch (sortOption) {
+      case "title-asc":
+        return a.title.localeCompare(b.title);
+      case "title-desc":
+        return b.title.localeCompare(a.title);
+      case "date-asc":
+        return (
+          parseInt(a.creationDate ?? "0", 10) -
+          parseInt(b.creationDate ?? "0", 10)
+        );
+      case "date-desc":
+        return (
+          parseInt(b.creationDate ?? "0", 10) -
+          parseInt(a.creationDate ?? "0", 10)
+        );
+      default:
+        return 0;
+    }
+  });
+
+  const lastItemIndex = currentPage * artworksPerPage;
+  const firstItemIndex = lastItemIndex - artworksPerPage;
+  const currentArtworks = sortedArtToShow.slice(firstItemIndex, lastItemIndex);
+
   const totalPages = Math.ceil(artToShow.length / artworksPerPage);
   const pageNumbers = getPageNumbers(currentPage, totalPages);
 
@@ -75,7 +100,23 @@ export const ArtworkList: React.FC = () => {
       )}
       {err && <p>Error: {err.message}</p>}
       <div className="flex justify-end pt-2">
-        <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+        <div>
+          <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+        </div>
+        <div className="flex col-auto">
+          <p className="pt-1">
+            <span className="pr-2 pl-2">Sort:</span>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value as any)}
+            >
+              <option value="title-asc">A-Z</option>
+              <option value="title-desc">Z-A</option>
+              <option value="date-asc">Oldest to Newest</option>
+              <option value="date-desc">Newest to Oldest</option>
+            </select>
+          </p>
+        </div>
       </div>
 
       {loading ? (
