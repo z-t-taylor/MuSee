@@ -13,50 +13,63 @@ const apiAIC = axios.create({
   baseURL: "https://api.artic.edu/api/v1/artworks",
 });
 
-export const fetchAICArtworkList = async (
+const fetchAICArtworkList = async (
   page: number = 1,
-  limit: number = 12
+  limit: number = 32
 ): Promise<Artwork[]> => {
-  const offset = (page - 1) * limit;
-  const response = await apiAIC.get<AICArtworkListResponse>(
-    `/?limit=${limit}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles`
-  );
+  const desiredLimit = limit;
+  let validArtworks: Artwork[] = [];
+  let currentPage = page;
+  const batchSize = 48;
 
-  const filteredData = response.data.data.filter(
-    (artwork) => artwork.image_id !== null && artwork.image_id !== ""
-  );
-
-  const artworks = await Promise.all(
-    filteredData.map((artwork) => fetchSingleAICArtwork(artwork.id.toString()))
-  );
-  const withImage = artworks.filter((art): art is Artwork => art !== null);
-  return await filteredValidImages(
-    withImage,
-    (artwork) => artwork.image.imageURL
-  );
-};
-
-const fetchSingleAICArtwork = async (id: string): Promise<Artwork | null> => {
-  try {
-    const response = await apiAIC.get<AICSingleArtworkResponse>(
-      `/${id}?fields=id,title,artist_display,image_id,date_display,thumbnail,medium_display,description,place_of_origin,style_titles,exhibition_history `
+  while (validArtworks.length < desiredLimit) {
+    const offset = (currentPage - 1) * batchSize;
+    const response = await apiAIC.get<AICArtworkListResponse>(
+      `/?limit=${batchSize}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles`
     );
 
-    const data = response.data.data;
-    const imageUrl = `https://www.artic.edu/iiif/2/${data.image_id}/full/843,/0/default.jpg`;
+    const filteredData = response.data.data.filter(
+      (artwork) => artwork.image_id !== null && artwork.image_id !== ""
+    );
 
-    const imageExists = await checkImageExists(imageUrl);
-    if (!imageExists) {
-      return null;
+    const artworkPromises = filteredData.map((artwork) =>
+      fetchSingleAICArtwork(artwork.id.toString())
+    );
+    const results = await Promise.all(artworkPromises);
+
+    for (const artwork of results) {
+      if (validArtworks.length >= desiredLimit) break;
+      if (artwork) validArtworks.push(artwork);
     }
 
-    const formattedStyles = Array.isArray(data.style_titles)
-      ? data.style_titles.join(", ")
-      : data.style_titles;
+    currentPage++;
 
-    return adaptAICToArtwork({ ...data, style_titles: formattedStyles });
+    if (response.data.data.length < batchSize) break;
+  }
+
+  return validArtworks.slice(0, desiredLimit);
+};
+
+const fetchSingleAICArtwork = async (
+  id: string,
+  retries: number = 3
+): Promise<Artwork | null> => {
+  try {
+    const response = await apiAIC.get<AICSingleArtworkResponse>(
+      `/${id}?fields=id,title,artist_display,image_id,date_display,thumbnail,medium_display,description,place_of_origin,style_titles,exhibition_history`
+    );
+
+    if (response.status === 403 && retries > 0) {
+      return fetchSingleAICArtwork(id, retries - 1);
+    }
+
+    if (!response.data.data.image_id) return null;
+
+    const imageUrl = `https://www.artic.edu/iiif/2/${response.data.data.image_id}/full/843,/0/default.jpg`;
+    const imageExists = await checkImageExists(imageUrl);
+
+    return imageExists ? adaptAICToArtwork(response.data.data) : null;
   } catch (error) {
-    console.log(`Error: ${error}`);
     return null;
   }
 };
@@ -64,31 +77,56 @@ const fetchSingleAICArtwork = async (id: string): Promise<Artwork | null> => {
 const searchAICArtworks = async (
   query: string,
   page: number = 1,
-  limit: number = 12
+  limit: number = 96
 ): Promise<Artwork[]> => {
-  const offset = (page - 1) * limit;
-  const response = await apiAIC.get<AICArtworkListResponse>(
-    `/search?q=${encodeURIComponent(
-      query
-    )}&fields=id,title,artist_display,image_id,date_display,category_titles,thumbnail&limit=${limit}&offset=${offset}`
-  );
+  try {
+    const offset = (page - 1) * limit;
+    const response = await apiAIC.get<AICArtworkListResponse>("/search", {
+      params: {
+        q: query,
+        fields:
+          "id,title,artist_display,image_id,date_display,thumbnail,medium_display,category_titles",
+        limit,
+        offset,
+      },
+    });
 
-  if (!response.data.data.length) return [];
+    const filtered = response.data.data.filter(
+      (artwork) => artwork.image_id && artwork.thumbnail
+    );
 
-  const filtered = response.data.data.filter(
-    (artwork) =>
-      artwork.image_id !== null &&
-      artwork.image_id !== "" &&
-      artwork.category_titles?.includes("AIC Archives")
-  );
-  const artworks = await Promise.all(
-    filtered.map((artwork) => fetchSingleAICArtwork(artwork.id.toString()))
-  );
-  const withImage = artworks.filter((art): art is Artwork => art !== null);
-  return await filteredValidImages(
-    withImage,
-    (artwork) => artwork.image.imageURL
-  );
+    const artworks = await Promise.all(
+      filtered.map(async (artwork) => {
+        try {
+          const imageUrl = `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`;
+          const imageExists = await checkImageExists(imageUrl);
+
+          return imageExists
+            ? adaptAICToArtwork({
+                ...artwork,
+                style_titles: artwork.category_titles || [],
+              })
+            : null;
+        } catch (error) {
+          console.error(`Error processing artwork ${artwork.id}:`, error);
+          return null;
+        }
+      })
+    );
+
+    const validArtworks = artworks.filter(
+      (art): art is Artwork => art !== null
+    );
+    return validArtworks.slice(0, limit);
+  } catch (error) {
+    console.error("AIC Search Error Details:", {
+      error: error instanceof Error ? error.message : "Unknown error",
+      query,
+      page,
+      limit,
+    });
+    return [];
+  }
 };
 
 const apiMet = axios.create({
@@ -117,7 +155,7 @@ export const fetchMetArtworkList = async (
     let currentIndex = 0;
 
     while (
-      totalValidArtworks < 12 &&
+      totalValidArtworks < 32 &&
       currentIndex < searchData.objectIDs.length
     ) {
       const id = searchData.objectIDs[currentIndex];
@@ -160,14 +198,14 @@ export const fetchMetArtworkList = async (
 
 const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
   try {
-    const res = await apiMet.get<MetAPIBaseResponse>(
+    const response = await apiMet.get<MetAPIBaseResponse>(
       `/search?hasImages=true&q=${query}`
     );
 
-    if (!res.data.objectIDs?.length) return [];
+    if (!response.data.objectIDs?.length) return [];
 
     const artworks = await Promise.all(
-      res.data.objectIDs.slice(0, 12).map(async (id) => {
+      response.data.objectIDs.slice(0, 96).map(async (id) => {
         try {
           const { data } = await apiMet.get(`/objects/${id}`);
 

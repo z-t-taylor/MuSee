@@ -50,10 +50,10 @@ export const userExhibitionStore = create<ExhibitionStore>()(
         const newExhibition: UserExhibition = {
           exhibitionId: crypto.randomUUID(),
           title,
+          slug,
           artworks: [],
           createdAt: new Date(),
           updatedAt: new Date(),
-          slug,
         };
         set({ exhibitions: [...get().exhibitions, newExhibition] });
         return newExhibition;
