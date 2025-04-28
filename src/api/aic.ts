@@ -11,6 +11,7 @@ interface AICArtworkBaseResponse {
   image_id: string;
   date_display: string | undefined;
   category_titles?: string[];
+  department_title?: string | string[];
 }
 
 export interface AICSingleArtworkResponse {
@@ -50,7 +51,7 @@ export const adaptAICToArtwork = (
   },
   medium: item.medium_display,
   origin: item.place_of_origin,
-  styles: item.style_titles,
+  styles: item.style_titles || item.department_title,
   description: item.description,
   exhibitionHistory: item.exhibition_history,
   museumSource: "aic",

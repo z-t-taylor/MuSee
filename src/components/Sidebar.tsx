@@ -8,7 +8,6 @@ export const Sidebar = () => {
 
   const iconBase = "transition-colors";
   const iconColor = "text-[#195183]";
-  const iconHover = "group-hover:text-[#B63900]";
   const iconActive = "text-[#0C49B8]";
 
   return (
@@ -17,17 +16,17 @@ export const Sidebar = () => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `group ${linkClass} ${isActive ? "bg-gray-200 font-semibold" : ""}`
+            `group ${linkClass} ${isActive ? " bg-blue-50 font-semibold" : ""}`
           }
         >
           {({ isActive }) => (
             <>
               <HomeOutlinedIcon
-                className={`${iconBase} ${iconColor} ${iconHover} ${
+                className={`text-[#195183] ${iconBase} ${iconColor}${
                   isActive ? iconActive : ""
                 }`}
               />
-              <h2 className="text-[#195183] hover:text-[#B63900]">Home</h2>
+              <h2 className="text-[#195183]">Home</h2>
             </>
           )}
         </NavLink>
@@ -35,19 +34,17 @@ export const Sidebar = () => {
         <NavLink
           to="/exhibitions"
           className={({ isActive }) =>
-            `group ${linkClass} ${isActive ? "bg-gray-200 font-semibold" : ""}`
+            `group ${linkClass} ${isActive ? "bg-gray-200" : ""}`
           }
         >
           {({ isActive }) => (
             <>
               <CollectionsOutlinedIcon
-                className={`${iconBase} ${iconColor} ${iconHover} ${
+                className={`${iconBase} ${iconColor} ${
                   isActive ? iconActive : ""
                 }`}
               />
-              <h2 className="text-[#195183] hover:text-[#B63900]">
-                Exhibitions
-              </h2>
+              <h2 className="text-[#195183]">Exhibitions</h2>
             </>
           )}
         </NavLink>

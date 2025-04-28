@@ -25,7 +25,7 @@ const fetchAICArtworkList = async (
   while (validArtworks.length < desiredLimit) {
     const offset = (currentPage - 1) * batchSize;
     const response = await apiAIC.get<AICArtworkListResponse>(
-      `/?limit=${batchSize}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles`
+      `/?limit=${batchSize}&offset=${offset}&fields=id,title,artist_display,image_id,date_display,thumbnail,category_titles,department_title`
     );
 
     const filteredData = response.data.data.filter(
@@ -56,7 +56,7 @@ const fetchSingleAICArtwork = async (
 ): Promise<Artwork | null> => {
   try {
     const response = await apiAIC.get<AICSingleArtworkResponse>(
-      `/${id}?fields=id,title,artist_display,image_id,date_display,thumbnail,medium_display,description,place_of_origin,style_titles,exhibition_history`
+      `/${id}?fields=id,title,artist_display,image_id,date_display,thumbnail,medium_display,description,place_of_origin,style_titles,exhibition_history,department_title`
     );
 
     if (response.status === 403 && retries > 0) {
