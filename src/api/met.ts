@@ -15,6 +15,7 @@ interface MetSingleArtworkResponse {
   objectDate: string;
   artistNationality: string;
   country?: string;
+  culture?: string;
   medium: string;
   classification: string;
   objectURL: string;
@@ -31,7 +32,7 @@ export const adaptMetToArtwork = (item: MetSingleArtworkResponse): Artwork => ({
     thumbnail: item.primaryImageSmall,
   },
   medium: item.medium,
-  origin: item.country || item.artistNationality,
+  origin: item.culture || item.country || item.artistNationality,
   styles: item.classification,
   description: item.artistDisplayBio || undefined,
   exhibitionHistory: undefined,
