@@ -41,15 +41,15 @@ export const AddArtworkButton: React.FC<Props> = ({
         disabled={isAlreadyExhibited}
         className={
           variant === "button"
-            ? `px-4 py-2 rounded ${
+            ? `px-4 py-2 rounded-xl border ${
                 isAlreadyExhibited
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#195183] hover:bg-blue-700"
+                  ? "bg-gray-400 cursor-not-allowed border-transparent"
+                  : "text-[#195183] border-[#195183] hover:bg-[#195183] hover:text-white"
               }`
-            : `p-2 rounded-full ${
+            : `p-2 rounded-full border ${
                 isAlreadyExhibited
                   ? "text-gray-400"
-                  : "text-[#195183] hover:bg-blue-50"
+                  : "text-[#195183] border-[#195183] hover:bg-blue-50"
               }`
         }
         aria-label={
@@ -63,8 +63,13 @@ export const AddArtworkButton: React.FC<Props> = ({
             "Add to Exhibition"
           )
         ) : (
-          <div className="border-[#195183]-500">
-            <p className="text-[#195183] pl-4 pr-4 p-2">Add +</p>
+          <div>
+            <p
+              className="text-[#195183] pl-2 pr-2 text-sm"
+              aria-label="Add artwork to exhibition"
+            >
+              Add +
+            </p>
           </div>
         )}
       </button>

@@ -14,14 +14,14 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
 }) => {
   const imageClass =
     viewMode === "grid"
-      ? "w-full h-[300px] object-cover rounded"
+      ? "w-full h-[250px] object-cover rounded"
       : "w-[300px] h-full object-contain rounded";
 
   return (
-    <div className="artwork-card">
+    <div className="flex flex-col h-full">
       <Link
         to={`/artwork/${artwork.museumSource}/${artwork.id}`}
-        className="artwork-link"
+        className="flex flex-col h-full"
       >
         <img
           src={artwork.image?.imageURL || placeholder}
@@ -33,11 +33,11 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
           loading="lazy"
           className={imageClass}
         />
-        <h2 className="items-center w-[300px]">
+        <h2 className="items-center w-full font-sans mt-2 mb-4 line-clamp-2 min-h-[3rem]">
           {artwork.title || "Untitled"} by {artwork.artist || "Unknown"}
         </h2>
       </Link>
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end">
         <AddArtworkButton artwork={artwork} variant="icon" />
       </div>
     </div>
