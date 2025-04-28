@@ -1,54 +1,85 @@
-# React + TypeScript + Vite
+# MuSee 🖼️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Currently, two official plugins are available:
+A modern web application for curating virtual art exhibitions using collections from major museums.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![MuSee Demo Preview](https://via.placeholder.com/800x400.png?text=MuSee+Interface+Preview) _Add actual screenshots when available_
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Artwork Discovery**
+  - Browse thousands of artworks from The Met and Art Institute Chicago
+  - Detailed artwork information with descriptions and historical context
+- **Exhibition Curation**
+  - Create and manage custom exhibitions
+  - Save and organize artwork selections
+- **Responsive Design**
+  - Optimized for desktop and mobile viewing
+  - Adaptive image layouts for portrait/landscape artworks
+- **Museum Integration**
+  - Direct access to museum collection information
+  - Public API integration with:
+    - [Art Institute of Chicago API](https://www.artic.edu/open-access)
+    - [The Met Collection API](https://metmuseum.github.io)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Frontend**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- ⚛️ React 19 + TypeScript
+- 🎨 Tailwind CSS + Material-UI
+- 🗺️ React Router 7
+- 🚀 Vite Build System
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+**State Management**
+
+- 🐻 Zustand for global state
+- 🧠 React Query for API data handling
+
+**APIs**
+
+- Axios HTTP client
+- Public museum APIs (no keys required)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js v18+
+- npm/yarn
+
+### Installation
+
+1. Open terminal
+
+2. Clone repository
+
+````bash
+git clone https://github.com/z-t-taylor/MuSee.git
+
+
+3. Install dependancies
+
+```bash
+npm install
+
+4. Start development server
+
+```bash
+npm run dev
+
+````
+
+License
+Distributed under the MIT License. See LICENSE for more information.
+
+Acknowledgements
+Art Institute Chicago for their open access API
+
+The Metropolitan Museum of Art for their public collection data
+
+React community for amazing open source tools
+
+Created by Zoe Taylor
+Find me here at <a>https://github.com/z-t-taylor<a/>
