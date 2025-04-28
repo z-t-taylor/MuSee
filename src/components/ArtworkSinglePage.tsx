@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactNode } from "react";
+import React, { useEffect, useState, ReactNode, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Artwork } from "../api/types";
 import { fetchAllArtworks } from "../api/apiCalls";
@@ -14,6 +14,13 @@ export const ArtworkSinglePage: React.FC = () => {
   const { museumSource, id } = useParams<ArtworkIDParams>();
   const [artwork, setArtwork] = useState<Artwork | null>(null);
   const [err, setErr] = useState<Error | null>(null);
+  const [isPortrait, setIsPortrait] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    setIsPortrait(img.naturalHeight > img.naturalWidth);
+  };
 
   useEffect(() => {
     const fetchArtwork = async () => {
@@ -22,12 +29,6 @@ export const ArtworkSinglePage: React.FC = () => {
 
         const foundArtwork = artworks.find(
           (art) => art.id === id && art.museumSource === museumSource
-        );
-        console.log(
-          "Fetching artwork with ID:",
-          id,
-          "and Museum Source:",
-          museumSource
         );
         setArtwork(foundArtwork || null);
       } catch (error) {
@@ -66,15 +67,21 @@ export const ArtworkSinglePage: React.FC = () => {
               </h3>
               <h4 className="text-sm">{artwork.origin || "Unknown"}</h4>
             </div>
-            <img
-              src={artwork.image?.imageURL}
-              alt={artwork.image?.altText || artwork.title}
-              loading="lazy"
-              className="w-[75%] ml-2 pl-2"
-            />
+            <div
+              className={`flex-1 ${isPortrait ? "flex justify-center" : ""}`}
+            >
+              <img
+                ref={imgRef}
+                src={artwork.image?.imageURL}
+                alt={artwork.image?.altText || artwork.title}
+                loading="lazy"
+                className={`${isPortrait ? "w-[50%]" : "w-[75%] ml-2 pl-2"}`}
+                onLoad={handleImageLoad}
+              />
+            </div>
           </div>
           <div className="flex flex-col mt-10">
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-end mb-4 mr-8">
               <AddArtworkButton artwork={artwork} variant="button" />
             </div>
             <div className="flex flex-col md:flex-row gap-8 mb-20">
@@ -88,29 +95,25 @@ export const ArtworkSinglePage: React.FC = () => {
                         content: (
                           <div className="space-y-2">
                             <p className="font-sans">
-                              <span className="font-bold">Title: </span>
-                              {artwork.title || "Unknown"}
+                              Title: {artwork.title || "Unknown"}
                             </p>
-                            <p>
-                              <span>Artist: </span>{" "}
-                              {artwork.artist || "Unknown"}
+                            <p className="font-sans">
+                              Artist: {artwork.artist || "Unknown"}
                             </p>
-                            <p>
-                              <span>Dated: </span>{" "}
-                              {artwork.creationDate || "Unknown"}
+                            <p className="font-sans">
+                              Dated: {artwork.creationDate || "Unknown"}
                             </p>
-                            <p>
-                              <span>Medium: </span>{" "}
-                              {artwork.medium || "Unknown"}
+                            <p className="font-sans">
+                              Medium: {artwork.medium || "Unknown"}
                             </p>
-                            <p>
-                              <span>Culture: </span>{" "}
-                              {artwork.origin || "Unknown"}
+                            <p className="font-sans">
+                              Culture: {artwork.origin || "Unknown"}
                             </p>
-                            <p>
-                              <span>Styles: </span>{" "}
-                              {artwork.styles || "Unknown"}
-                            </p>
+                            {artwork.styles && artwork.styles.length >= 1 && (
+                              <p className="font-sans">
+                                Styles: {artwork.styles}
+                              </p>
+                            )}
                           </div>
                         ),
                       },
@@ -124,7 +127,13 @@ export const ArtworkSinglePage: React.FC = () => {
                                     {artwork.description
                                       .split("</p>")
                                       .map((chunk) =>
-                                        chunk.replace(/<[^>]+>/g, "").trim()
+                                        chunk
+                                          .replace(/<[^>]+>/g, "")
+                                          .trim()
+                                          .replace(
+                                            /\s*Click here to learn more about the collection\.?\s*/gi,
+                                            ""
+                                          )
                                       )
                                       .filter(Boolean)
                                       .map((para, i) => (

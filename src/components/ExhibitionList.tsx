@@ -33,6 +33,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
       <div className="flex justify-end pt-2">
         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
       </div>
+      <h1>Exhibitions:</h1>
       <div
         className={
           viewMode === "grid"

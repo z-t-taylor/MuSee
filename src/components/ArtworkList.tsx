@@ -120,7 +120,8 @@ export const ArtworkList: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center mt-4">
+        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+          <p className="mb-2 text-[#195183]">Loading..</p>
           <CircularProgress />
         </div>
       ) : currentArtworks.length === 0 && !err ? (
@@ -157,7 +158,7 @@ export const ArtworkList: React.FC = () => {
                 <button
                   onClick={() => setCurrentPage(Number(page))}
                   className={`px-3 py-1 border rounded ${
-                    page === currentPage ? "bg-gray-300" : ""
+                    page === currentPage ? "bg-blue-50" : ""
                   }`}
                 >
                   {page}

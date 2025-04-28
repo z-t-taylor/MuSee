@@ -17,7 +17,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
           onToggle("grid");
         }}
         className={`p-1 rounded ${
-          viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-400"
+          viewMode === "grid" ? " bg-blue-50 text-[#195183]" : "text-gray-400"
         }`}
         aria-label="Grid View"
       >
@@ -26,7 +26,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
       <button
         onClick={() => onToggle("list")}
         className={`p-1 rounded ${
-          viewMode === "list" ? "bg-blue-100 text-blue-600" : "text-gray-400"
+          viewMode === "list" ? "bg-blue-50 text-[#195183]" : "text-gray-400"
         }`}
         aria-label="List View"
       >

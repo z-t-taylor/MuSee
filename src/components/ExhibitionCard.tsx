@@ -2,6 +2,7 @@ import React from "react";
 import { UserExhibition } from "../api/userExhibition";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { Link } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ExhibitionCardProps {
   exhibition: UserExhibition;
@@ -13,14 +14,13 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
     (state) => state.removeExhibition
   );
   const firstArtwork = exhibition.artworks[0];
-  console.log("Artworks in exhibition:", exhibition.artworks);
 
   const handleRemove = (exhibitionId: string) => {
     removeExhibition(exhibitionId);
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 border-2 rounded pt-1 pb-3 px-4 text-center">
+    <div className="flex flex-col items-center gap-4 border rounded pt-1 pb-3 px-4 text-center">
       <Link
         to={`/exhibitions/${exhibition.slug}`}
         className="w-full"
@@ -39,8 +39,10 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             />
           </div>
         )}
-        <div className="mt-2 border rounded-lg">
-          <h2 className="text-md font-semibold">{exhibition.title}</h2>
+        <div className="flex justify-start mt-2 px-2">
+          <h2 className="text-md font-semibold hover:underline">
+            {exhibition.title}
+          </h2>
         </div>
       </Link>
       <div className="w-full flex justify-end mt-2">
@@ -49,9 +51,9 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             handleRemove(exhibition.exhibitionId);
           }}
           aria-label="Remove exhibition"
-          className="text-gray-600 hover:bg-red-400 hover:text-black border hover:border-0 px-3 py-1 rounded-xl transition-colors"
+          className="text-gray-600 hover:bg-blue-50 hover:text-black border hover:border-0 px-3 py-1 rounded-xl transition-colors"
         >
-          Remove
+          <DeleteIcon className="text-red-500" />
         </button>
       </div>
     </div>
