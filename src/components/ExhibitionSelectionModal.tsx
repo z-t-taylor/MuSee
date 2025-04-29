@@ -26,7 +26,9 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg max-w-md w-full">
-        <h2 className="text-xl font-bold mb-4">Add "{artworkTitle}"</h2>
+        <h2 className="text-xl font-semibold font-sans mb-4">
+          Add "{artworkTitle}"
+        </h2>
 
         <div className="space-y-4">
           {exhibitions.length > 0 && (
@@ -45,7 +47,11 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
                           : "hover:bg-gray-100"
                       }`}
                     >
-                      {exhibition.title} ({exhibition.artworks.length} artworks)
+                      {exhibition.title} ({exhibition.artworks.length}{" "}
+                      {exhibition.artworks.length === 1
+                        ? "artwork"
+                        : "artworks"}
+                      )
                     </button>
                   </li>
                 ))}
@@ -68,6 +74,7 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
                 setSelectedExhibitionId(undefined);
               }}
               className="w-full p-2 border rounded"
+              aria-label="Enter name for new exhibition"
             />
           </div>
         </div>
@@ -76,6 +83,7 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
           <button
             onClick={onCancel}
             className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+            aria-label="Cancel"
           >
             Cancel
           </button>
@@ -90,6 +98,7 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
             }}
             disabled={!newExhibitionName && !selectedExhibitionId}
             className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-blue-300"
+            aria-label="Confirm"
           >
             Confirm
           </button>

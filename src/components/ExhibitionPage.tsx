@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { ViewToggle } from "./ViewToggle";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const ExhibitionPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -14,8 +15,18 @@ export const ExhibitionPage: React.FC = () => {
 
   const exhibition = exhibitions.find((exhibit) => exhibit.slug === slug);
   if (exhibitions.length > 0 && !exhibition)
-    return <div>Exhibition not found</div>;
-  if (!exhibition) return <div>Loading exhibition...</div>;
+    return (
+      <div>
+        <p className="flex justify-center pb-12">Exhibition not found</p>
+      </div>
+    );
+  if (!exhibition)
+    return (
+      <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+        <p className="mb-2 text-[#195183]">Loading...</p>
+        <CircularProgress />
+      </div>
+    );
 
   const handleRemove = (artworkId: string) => {
     removeArtwork(artworkId);
@@ -39,13 +50,13 @@ export const ExhibitionPage: React.FC = () => {
       <h1>{exhibition.title}</h1>
       {exhibition.description && <p>{exhibition.description}</p>}
       {exhibition.artworks.length === 0 ? (
-        <p>
+        <p className="flex justify-center pb-12">
           This exhibition has no artworks yet.{" "}
           <Link
             to={"/"}
             className="text-blue-600 underline hover:text-blue-800"
           >
-            <p>{`Click here to add to ${exhibition.title}`}</p>
+            <p className="flex justify-center pb-12">{`Click here to add to ${exhibition.title}`}</p>
           </Link>
         </p>
       ) : (

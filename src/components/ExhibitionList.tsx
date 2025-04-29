@@ -3,6 +3,7 @@ import { UserExhibition } from "../api/userExhibition";
 import { ExhibitionCard } from "./ExhibitionCard";
 import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface ExhibitionListProps {
   exhibitions?: UserExhibition[];
@@ -13,9 +14,17 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
 }) => {
   const [filter, setFilter] = useState<UserExhibition[]>(exhibitions);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<Error | null>(null);
 
   useEffect(() => {
-    setFilter(exhibitions);
+    setLoading(true);
+    try {
+      setFilter(exhibitions);
+      setLoading(false);
+    } catch (error) {
+      setErr(error as Error);
+    }
   }, [exhibitions]);
 
   const handleSearch = (query: string) => {
@@ -30,24 +39,38 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
         onSearch={handleSearch}
         placeholder="Search for exhibitions..."
       />
+      {err && <p>Error: {err.message}</p>}
       <div className="flex justify-end pt-2">
         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
       </div>
-      <h1>Exhibitions:</h1>
-      <div
-        className={
-          viewMode === "grid"
-            ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
-            : "flex flex-col gap-4 items-center my-auto"
-        }
-      >
-        {filter.map((exhibition) => (
-          <ExhibitionCard
-            key={exhibition.exhibitionId}
-            exhibition={exhibition}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+          <p className="mb-2 text-[#195183]">Loading..</p>
+          <CircularProgress />
+        </div>
+      ) : exhibitions.length === 0 && !err ? (
+        <p className="flex justify-center pb-12">
+          Sorry, no exhibitions found.{" "}
+        </p>
+      ) : (
+        <>
+          <h1>Exhibitions:</h1>
+          <div
+            className={
+              viewMode === "grid"
+                ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
+                : "flex flex-col gap-4 items-center my-auto"
+            }
+          >
+            {filter.map((exhibition) => (
+              <ExhibitionCard
+                key={exhibition.exhibitionId}
+                exhibition={exhibition}
+              />
+            ))}
+          </div>{" "}
+        </>
+      )}
     </div>
   );
 };
