@@ -2,9 +2,7 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A modern web application for curating virtual art exhibitions using collections from major museums.
-
-![MuSee Demo Preview](https://via.placeholder.com/800x400.png?text=MuSee+Interface+Preview) _Add actual screenshots when available_
+A modern web application for curating virtual art exhibitions using collections from major museums - Art Institute Chicago (AIC) and the Metropolitan Museum of Art (the Met).
 
 ## Features
 
@@ -14,9 +12,8 @@ A modern web application for curating virtual art exhibitions using collections 
 - **Exhibition Curation**
   - Create and manage custom exhibitions
   - Save and organize artwork selections
-- **Responsive Design**
+- **Responsive and Accessible Design**
   - Optimized for desktop and mobile viewing
-  - Adaptive image layouts for portrait/landscape artworks
 - **Museum Integration**
   - Direct access to museum collection information
   - Public API integration with:
@@ -35,7 +32,6 @@ A modern web application for curating virtual art exhibitions using collections 
 **State Management**
 
 - 🐻 Zustand for global state
-- 🧠 React Query for API data handling
 
 **APIs**
 
@@ -53,23 +49,17 @@ A modern web application for curating virtual art exhibitions using collections 
 
 1. Open terminal
 
-2. Clone repository
+2. Clone repository by typing or pasting the following -
 
-````bash
 git clone https://github.com/z-t-taylor/MuSee.git
 
+3. Install dependancies by typing or pasting the following -
 
-3. Install dependancies
-
-```bash
 npm install
 
-4. Start development server
+4. Start development server by running -
 
-```bash
 npm run dev
-
-````
 
 License
 Distributed under the MIT License. See LICENSE for more information.
