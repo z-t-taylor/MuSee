@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { ViewToggle } from "./ViewToggle";
 import CircularProgress from "@mui/material/CircularProgress";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
+import { UserExhibitionArtwork } from "../api/userExhibition";
 
 export const ExhibitionPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -12,21 +15,65 @@ export const ExhibitionPage: React.FC = () => {
     (state) => state.removeExhibition
   );
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [confirmDeleteExhibit, setConfirmDeleteExhibit] = useState(false);
+  const [confirmDeleteArt, setConfirmDeleteArt] = useState<string | null>(null);
+
+  const [sortOption, setSortOption] = useState<
+    | "title-asc"
+    | "title-desc"
+    | "added-asc"
+    | "added-desc"
+    | "created-asc"
+    | "created-desc"
+  >("added-asc");
 
   const exhibition = exhibitions.find((exhibit) => exhibit.slug === slug);
-  if (exhibitions.length > 0 && !exhibition)
+
+  const sortedArtworks = useMemo(() => {
+    if (!exhibition) return [];
+
+    return [...exhibition.artworks].sort((a, b) => {
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      const createdA = new Date(a.creationDate ?? 0).getTime();
+      const createdB = new Date(b.creationDate ?? 0).getTime();
+      const addedA = new Date(a.addedAt).getTime();
+      const addedB = new Date(b.addedAt).getTime();
+
+      switch (sortOption) {
+        case "title-asc":
+          return titleA.localeCompare(titleB);
+        case "title-desc":
+          return titleB.localeCompare(titleA);
+        case "created-asc":
+          return createdA - createdB;
+        case "created-desc":
+          return createdB - createdA;
+        case "added-asc":
+          return addedA - addedB;
+        case "added-desc":
+          return addedB - addedA;
+        default:
+          return 0;
+      }
+    });
+  }, [exhibition, sortOption]);
+
+  if (exhibitions.length > 0 && !exhibition) {
     return (
       <div>
         <p className="flex justify-center pb-12">Exhibition not found</p>
       </div>
     );
-  if (!exhibition)
+  }
+  if (!exhibition) {
     return (
       <div className="flex flex-col items-center justify-center mt-4 space-y-4">
         <p className="mb-2 text-[#195183]">Loading...</p>
         <CircularProgress />
       </div>
     );
+  }
 
   const handleRemove = (artworkId: string) => {
     removeArtwork(artworkId);
@@ -37,18 +84,36 @@ export const ExhibitionPage: React.FC = () => {
 
   return (
     <div>
-      <div>
-        <button
-          onClick={() => {
-            handleRemoveExhibition(exhibition.exhibitionId);
-          }}
-          className="text-gray-600 hover:text-red-500"
-        >
-          Delete Exhibition
-        </button>
+      <div className="flex flex-col mt-10">
+        <div className="w-full md:w-1/3">
+          <h2 className="italic mb-4">Exhibition:</h2>
+          <h1 className="text-2xl font-bold">{exhibition.title}</h1>
+          {exhibition.description && (
+            <p className="mt-2">{exhibition.description}</p>
+          )}
+        </div>
+        <div className="w-full flex justify-end mt-2">
+          <button
+            onClick={() => {
+              setConfirmDeleteExhibit(true);
+            }}
+            aria-label="Remove exhibition"
+            className="text-gray-600 hover:bg-blue-50 hover:text-black border hover:border-0 px-3 py-1 rounded-xl transition-colors"
+          >
+            <DeleteIcon className="text-red-500" />
+          </button>
+          <ConfirmDeleteModal
+            open={confirmDeleteExhibit}
+            title="Delete exhibition?"
+            description={`This will permanently remove “${exhibition.title}”. Are you sure?`}
+            onCancel={() => setConfirmDeleteExhibit(false)}
+            onConfirm={() => {
+              handleRemoveExhibition(exhibition.exhibitionId);
+              setConfirmDeleteExhibit(false);
+            }}
+          />
+        </div>
       </div>
-      <h1>{exhibition.title}</h1>
-      {exhibition.description && <p>{exhibition.description}</p>}
       {exhibition.artworks.length === 0 ? (
         <p className="flex justify-center pb-12">
           This exhibition has no artworks yet.{" "}
@@ -61,18 +126,37 @@ export const ExhibitionPage: React.FC = () => {
         </p>
       ) : (
         <div className="grid gap-4">
-          <div>
+          <div className="flex justify-end pt-2">
             <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+            <select
+              value={sortOption}
+              onChange={(e) =>
+                setSortOption(e.target.value as typeof sortOption)
+              }
+              className="border px-2 py-1 rounded ml-1"
+            >
+              <option value="added-asc">Recently Added</option>
+              <option value="added-desc">Oldest Added</option>
+              <option value="title-asc">Title A-Z</option>
+              <option value="title-desc">Title Z-A</option>
+              <option value="created-asc">Newest-Oldest</option>
+              <option value="created-desc">Oldest-Newest </option>
+            </select>
           </div>
           <div
             className={
               viewMode === "list"
-                ? "flex flex-col gap-4"
-                : "grid grid-cols-2 md:grid-cols-4 gap-4"
+                ? "flex flex-col gap-4 items-center"
+                : "grid grid-cols-2 md:grid-cols-4 gap-4 items-stretch"
             }
           >
-            {exhibition.artworks.map((artwork) => (
-              <div key={artwork.id} className="border p-2 rounded hover:shadow">
+            {sortedArtworks.map((artwork: UserExhibitionArtwork) => (
+              <div
+                key={artwork.id}
+                className={`relative border p-4 rounded-xl hover:shadow ${
+                  viewMode === "list" ? "w-[40%]" : "w-full"
+                }`}
+              >
                 <img
                   src={artwork.image?.imageURL}
                   alt={
@@ -83,15 +167,42 @@ export const ExhibitionPage: React.FC = () => {
                     e.currentTarget.src =
                       "MuSee/public/mona-lisa placeholder.png";
                   }}
+                  className="rounded-lg"
                 />
-                <h2>Title: {artwork.title}</h2>
-                <h3>Artist: {artwork.artist}</h3>
-                <button
-                  onClick={() => handleRemove(artwork.id)}
-                  className="text-gray-600 hover:text-red-500"
+                <h2 className="text-base my-2">
+                  Title: {artwork.title || "Unknown"}
+                </h2>
+                <h3 className="text-sm mb-4">
+                  Artist: {artwork.artist || "Unknown"}
+                </h3>
+                <Link
+                  to={`/artwork/${artwork.museumSource}/${artwork.id}`}
+                  className="hover:underline hover:italic"
                 >
-                  Remove
-                </button>
+                  <p className="mb-1 pb-8">See artwork in detail</p>
+                </Link>
+                <div className="absolute bottom-4 right-4 mt-4">
+                  <button
+                    onClick={() => {
+                      setConfirmDeleteArt(artwork.id);
+                    }}
+                    className="text-gray-600 hover:bg-blue-50 hover:text-black border hover:border-0 px-3 py-1 rounded-xl transition-colors"
+                  >
+                    <DeleteIcon className="text-red-500" />
+                  </button>
+                  <ConfirmDeleteModal
+                    open={confirmDeleteArt === artwork.id}
+                    title="Delete artwork?"
+                    description={`This will permanently remove “${artwork.title}”. Are you sure?`}
+                    onCancel={() => {
+                      setConfirmDeleteArt(null);
+                    }}
+                    onConfirm={() => {
+                      handleRemove(artwork.id);
+                      setConfirmDeleteArt(null);
+                    }}
+                  />
+                </div>
               </div>
             ))}
           </div>

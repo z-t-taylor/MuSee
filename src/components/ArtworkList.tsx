@@ -109,9 +109,10 @@ export const ArtworkList: React.FC = () => {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value as any)}
+              className="border px-2 py-1 rounded ml-1"
             >
-              <option value="title-asc">A-Z</option>
-              <option value="title-desc">Z-A</option>
+              <option value="title-asc">Title A-Z</option>
+              <option value="title-desc">Title Z-A</option>
               <option value="date-asc">Oldest to Newest</option>
               <option value="date-desc">Newest to Oldest</option>
             </select>

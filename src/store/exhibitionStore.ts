@@ -8,7 +8,7 @@ interface ExhibitionStore {
   selectedArtworks: UserExhibitionArtwork[];
   addArtwork: (artwork: UserExhibitionArtwork, exhibitionId?: string) => void;
   removeArtwork: (id: string) => void;
-  createExhibition: (name: string) => UserExhibition;
+  createExhibition: (title: string, description: string) => UserExhibition;
   removeExhibition: (exhibitionId: string) => void;
 }
 
@@ -44,13 +44,16 @@ export const userExhibitionStore = create<ExhibitionStore>()(
             artworks: ex.artworks.filter((art) => art.id !== id),
           })),
         }),
-      createExhibition: (title: string) => {
-        const duplicateSlug = get().exhibitions.map((ex) => ex.slug ?? "");
+      createExhibition: (title: string, description: string) => {
+        const duplicateSlug = get().exhibitions.map(
+          (exhibition) => exhibition.slug ?? ""
+        );
         const slug = generateUniqueSlug(title, duplicateSlug);
         const newExhibition: UserExhibition = {
           exhibitionId: crypto.randomUUID(),
           title,
           slug,
+          description: description?.trim() || undefined,
           artworks: [],
           createdAt: new Date(),
           updatedAt: new Date(),

@@ -76,6 +76,8 @@ export const AddArtworkButton: React.FC<Props> = ({
       <ExhibitionSelectionModel
         show={showModal}
         artworkTitle={artwork.title}
+        artworkImage={artwork.image.imageURL}
+        artworkImageAlt={artwork.image.altText || artwork.title}
         onAddToExhibition={handleAdd}
         onCancel={() => setShowModal(false)}
       />
