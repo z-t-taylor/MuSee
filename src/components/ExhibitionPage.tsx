@@ -126,22 +126,25 @@ export const ExhibitionPage: React.FC = () => {
         </p>
       ) : (
         <div className="grid gap-4">
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end py-3">
             <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
-            <select
-              value={sortOption}
-              onChange={(e) =>
-                setSortOption(e.target.value as typeof sortOption)
-              }
-              className="border px-2 py-1 rounded ml-1"
-            >
-              <option value="added-asc">Recently Added</option>
-              <option value="added-desc">Oldest Added</option>
-              <option value="title-asc">Title A-Z</option>
-              <option value="title-desc">Title Z-A</option>
-              <option value="created-asc">Newest-Oldest</option>
-              <option value="created-desc">Oldest-Newest </option>
-            </select>
+            <p className="pt-1">
+              <span className="pr-2 pl-2">Sort:</span>
+              <select
+                value={sortOption}
+                onChange={(e) =>
+                  setSortOption(e.target.value as typeof sortOption)
+                }
+                className="border px-2 py-1 rounded"
+              >
+                <option value="added-asc">Recently Added</option>
+                <option value="added-desc">Oldest Added</option>
+                <option value="title-asc">Title A-Z</option>
+                <option value="title-desc">Title Z-A</option>
+                <option value="created-asc">Newest-Oldest</option>
+                <option value="created-desc">Oldest-Newest </option>
+              </select>
+            </p>
           </div>
           <div
             className={
