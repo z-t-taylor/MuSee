@@ -108,7 +108,6 @@ const searchAICArtworks = async (
               })
             : null;
         } catch (error) {
-          console.error(`Error processing artwork ${artwork.id}:`, error);
           return null;
         }
       })
@@ -119,12 +118,6 @@ const searchAICArtworks = async (
     );
     return validArtworks.slice(0, limit);
   } catch (error) {
-    console.error("AIC Search Error Details:", {
-      error: error instanceof Error ? error.message : "Unknown error",
-      query,
-      page,
-      limit,
-    });
     return [];
   }
 };
@@ -171,7 +164,6 @@ export const fetchMetArtworkList = async (
           artworks.push(null);
         }
       } catch (error) {
-        console.log(`Error fetching object ${id}: ${error}`);
         artworks.push(null);
       }
 
@@ -191,7 +183,6 @@ export const fetchMetArtworkList = async (
       (artwork) => artwork.image.imageURL
     );
   } catch (error) {
-    console.log(`Error: ${error}`);
     return [];
   }
 };
@@ -226,7 +217,6 @@ const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
       (artwork) => artwork.image.imageURL
     );
   } catch (error) {
-    console.log(`Error: ${error}`);
     return [];
   }
 };

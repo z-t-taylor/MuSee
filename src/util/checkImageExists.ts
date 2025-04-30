@@ -4,7 +4,6 @@ export const checkImageExists = (url: string): Promise<boolean> => {
     img.src = url;
     img.onload = () => resolve(true);
     img.onerror = () => {
-      console.log(`Error loading image: ${url}`);
       resolve(false);
     };
   });
