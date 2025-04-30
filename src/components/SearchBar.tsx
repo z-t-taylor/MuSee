@@ -30,7 +30,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={placeholder}
-            className="p-2 pr-16 pl-8 border border-gray-300 rounded-[2vw] w-full"
+            className="p-2 pr-16 pl-8 border border-gray-300 rounded-xl md:rounded-[2vw] w-full"
           />
 
           {searchInput && (
@@ -45,7 +45,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           )}
           <button
             type="submit"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#195183] text-white px-3 py-1 text-sm rounded-[1vw] hover:bg-gray-500"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#195183] text-white px-3 py-1 text-sm rounded-lg md:rounded-[1vw] hover:bg-gray-500"
           >
             <SearchSharpIcon />
           </button>

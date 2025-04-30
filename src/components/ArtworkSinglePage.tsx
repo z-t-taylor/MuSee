@@ -57,8 +57,8 @@ export const ArtworkSinglePage: React.FC = () => {
         </div>
       ) : (
         <div>
-          <div className="flex flex-row mt-6 mb-10">
-            <div className=" flex flex-col px-5 border-r">
+          <div className="flex flex-col md:flex-row mt-3 md:mt-6 mb-10">
+            <div className="flex flex-col px-5 md:w-1/3 md:border-r pb-5 md:pb-0 mb-5 md:mb-0">
               <h1 className="font-serif font-medium text-2xl">
                 {artwork.title}
               </h1>
@@ -68,25 +68,33 @@ export const ArtworkSinglePage: React.FC = () => {
               <h4 className="text-sm">{artwork.origin || "Unknown"}</h4>
             </div>
             <div
-              className={`flex-1 ${isPortrait ? "flex justify-center" : ""}`}
+              className={`flex-1 ${
+                isPortrait ? "flex justify-center" : "flex justify-end md:mr-2"
+              } md:pl-8`}
             >
               <img
                 ref={imgRef}
                 src={artwork.image?.imageURL}
                 alt={artwork.image?.altText || artwork.title}
                 loading="lazy"
-                className={`${isPortrait ? "w-[50%]" : "w-[75%] ml-2 pl-2"}`}
+                className={`${
+                  isPortrait
+                    ? " w-full md:w-[50%]"
+                    : "w-full md:w-[75%] ml-2 pl-2"
+                }`}
                 onLoad={handleImageLoad}
               />
             </div>
           </div>
           <div className="flex flex-col mt-10">
-            <div className="flex justify-end mb-4 mr-8">
+            <div className="flex justify-end mb-4 mr-1 md:mr-2">
               <AddArtworkButton artwork={artwork} variant="button" />
             </div>
-            <div className="flex flex-col md:flex-row gap-8 mb-20">
+            <div className="flex flex-col md:flex-row gap-8 mb-3 md:mb-20">
               <div className="w-full md:w-4/5">
-                <h2 className="text-lg font-medium pb-5">Artwork Details</h2>
+                <h2 className="text-lg font-medium pb-5 pt-5 md:pt-1">
+                  Artwork Details
+                </h2>
                 <Tabs
                   tabs={
                     [

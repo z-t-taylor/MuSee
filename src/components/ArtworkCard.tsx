@@ -30,9 +30,9 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
             e.currentTarget.src = placeholder;
           }}
           loading="lazy"
-          className="w-full h-[250px] object-cover rounded"
+          className="w-full h-[150px] md:h-[250px] object-cover rounded"
         />
-        <h3 className="my-2 pb-12 font-bold text-start">
+        <h3 className="my-2 pb-12 font-bold text-start text-sm md:text-base">
           {artwork.title || "Untitled"}
         </h3>
       </Link>

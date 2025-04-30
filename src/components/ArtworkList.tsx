@@ -99,7 +99,7 @@ export const ArtworkList: React.FC = () => {
         </div>
       )}
       {err && <p>Error: {err.message}</p>}
-      <div className="flex justify-between pt-2">
+      <div className="flex justify-between pt-2 mt-2">
         <div>
           <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
         </div>
@@ -145,7 +145,7 @@ export const ArtworkList: React.FC = () => {
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 border rounded-xl disabled:opacity-50"
+          className="px-4 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
         >
           Previous
         </button>
@@ -158,7 +158,7 @@ export const ArtworkList: React.FC = () => {
               ) : (
                 <button
                   onClick={() => setCurrentPage(Number(page))}
-                  className={`px-3 py-1 border rounded-lg ${
+                  className={`px-3 py-1text-sm md:text-base border rounded-lg ${
                     page === currentPage ? "bg-blue-50" : ""
                   }`}
                 >
@@ -176,7 +176,7 @@ export const ArtworkList: React.FC = () => {
             )
           }
           disabled={currentPage === totalPages}
-          className="px-8 py-2 border rounded-xl disabled:opacity-50"
+          className="px-8 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
         >
           Next
         </button>
