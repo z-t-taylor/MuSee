@@ -30,7 +30,7 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 p-4 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+      <div className="bg-white p-8 pb-0 rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
         <div className="flex justify-center">
           <img
             src={artworkImage}
@@ -38,7 +38,7 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
             className="w-[60%] rounded-xl mb-2"
           />
         </div>
-        <h2 className="text-lg font-bold font-sans">Add: </h2>
+        <h2 className="text-base font-bold font-sans">Add: </h2>
         <h3 className="text-xl font-semibold font-sans mb-4 italic">
           {artworkTitle}
         </h3>
@@ -111,34 +111,34 @@ export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
               >
                 Characters: {newExhibitionDescription.length}/300
               </div>
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  onClick={onCancel}
-                  className="px-4 py-2 text-gray-600 border hover:bg-gray-100 rounded-xl"
-                  aria-label="Cancel"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    if (newExhibitionName) {
-                      const exhibition = createExhibition(
-                        newExhibitionName,
-                        newExhibitionDescription
-                      );
-                      onAddToExhibition(exhibition.exhibitionId);
-                    } else if (selectedExhibitionId) {
-                      onAddToExhibition(selectedExhibitionId);
-                    }
-                  }}
-                  disabled={!newExhibitionName && !selectedExhibitionId}
-                  className="px-4 py-2 bg-[#195183] text-white rounded-xl disabled:bg-gray-300"
-                  aria-label="Confirm"
-                >
-                  Confirm
-                </button>
-              </div>
             </div>
+          </div>
+          <div className="sticky bottom-0 border-t bg-white pt-2 pb-6 flex justify-end space-x-3">
+            <button
+              onClick={onCancel}
+              className="px-4 py-2 text-gray-600 border hover:bg-gray-100 rounded-xl"
+              aria-label="Cancel"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                if (newExhibitionName) {
+                  const exhibition = createExhibition(
+                    newExhibitionName,
+                    newExhibitionDescription
+                  );
+                  onAddToExhibition(exhibition.exhibitionId);
+                } else if (selectedExhibitionId) {
+                  onAddToExhibition(selectedExhibitionId);
+                }
+              }}
+              disabled={!newExhibitionName && !selectedExhibitionId}
+              className="px-4 py-2 bg-[#195183] text-white rounded-xl disabled:bg-gray-300"
+              aria-label="Confirm"
+            >
+              Confirm
+            </button>
           </div>
         </div>
       </div>
