@@ -11,7 +11,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
   onToggle,
 }) => {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2">
       <button
         onClick={() => {
           onToggle("grid");

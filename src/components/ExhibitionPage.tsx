@@ -126,7 +126,7 @@ export const ExhibitionPage: React.FC = () => {
         </p>
       ) : (
         <div className="grid gap-4">
-          <div className="flex justify-end py-3">
+          <div className="flex justify-between py-3">
             <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
             <p className="pt-1">
               <span className="pr-2 pl-2">Sort:</span>

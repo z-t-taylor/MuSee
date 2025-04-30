@@ -40,7 +40,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
         placeholder="Search for exhibitions..."
       />
       {err && <p>Error: {err.message}</p>}
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-start pt-2">
         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
       </div>
       {loading ? (
@@ -54,7 +54,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
         </p>
       ) : (
         <>
-          <h1>Exhibitions:</h1>
+          <h2 className="italic my-4">Exhibitions:</h2>
           <div
             className={
               viewMode === "grid"

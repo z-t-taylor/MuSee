@@ -99,7 +99,7 @@ export const ArtworkList: React.FC = () => {
         </div>
       )}
       {err && <p>Error: {err.message}</p>}
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-between pt-2">
         <div>
           <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
         </div>
@@ -176,7 +176,7 @@ export const ArtworkList: React.FC = () => {
             )
           }
           disabled={currentPage === totalPages}
-          className="px-4 py-2 border rounded-xl disabled:opacity-50"
+          className="px-8 py-2 border rounded-xl disabled:opacity-50"
         >
           Next
         </button>

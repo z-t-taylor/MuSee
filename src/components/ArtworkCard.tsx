@@ -15,7 +15,7 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
   return (
     <div
       className={`relative border p-4 rounded-xl hover:shadow ${
-        viewMode === "list" ? "w-[30%]" : "w-full"
+        viewMode === "list" ? "w-full md:w-[30%]" : "w-full"
       }`}
     >
       <Link
@@ -32,11 +32,7 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
           loading="lazy"
           className="w-full h-[250px] object-cover rounded"
         />
-        <h3
-          className={`my-2 pb-12 font-bold ${
-            viewMode === "list" ? "text-center" : "text-start"
-          }`}
-        >
+        <h3 className="my-2 pb-12 font-bold text-start">
           {artwork.title || "Untitled"}
         </h3>
       </Link>
