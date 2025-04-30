@@ -77,7 +77,7 @@ const fetchSingleAICArtwork = async (
 const searchAICArtworks = async (
   query: string,
   page: number = 1,
-  limit: number = 96
+  limit: number = 50
 ): Promise<Artwork[]> => {
   try {
     const offset = (page - 1) * limit;
@@ -196,7 +196,7 @@ const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
     if (!response.data.objectIDs?.length) return [];
 
     const artworks = await Promise.all(
-      response.data.objectIDs.slice(0, 96).map(async (id) => {
+      response.data.objectIDs.slice(0, 50).map(async (id) => {
         try {
           const { data } = await apiMet.get(`/objects/${id}`);
 
