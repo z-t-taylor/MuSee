@@ -1,8 +1,9 @@
-import React from "react";
+import { useState } from "react";
 import { UserExhibition } from "../api/userExhibition";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { Link } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 
 interface ExhibitionCardProps {
   exhibition: UserExhibition;
@@ -13,6 +14,7 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   const removeExhibition = userExhibitionStore(
     (state) => state.removeExhibition
   );
+  const [confirmDeleteExhibit, setConfirmDeleteExhibit] = useState(false);
   const firstArtwork = exhibition.artworks[0];
 
   const handleRemove = (exhibitionId: string) => {
@@ -48,13 +50,23 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       <div className="w-full flex justify-end mt-2">
         <button
           onClick={() => {
-            handleRemove(exhibition.exhibitionId);
+            setConfirmDeleteExhibit(true);
           }}
           aria-label="Remove exhibition"
           className="text-gray-600 hover:bg-blue-50 hover:text-black border hover:border-0 px-3 py-1 rounded-xl transition-colors"
         >
           <DeleteIcon className="text-red-500" />
         </button>
+        <ConfirmDeleteModal
+          open={confirmDeleteExhibit}
+          title="Delete exhibition?"
+          description={`This will permanently remove “${exhibition.title}”. Are you sure?`}
+          onCancel={() => setConfirmDeleteExhibit(false)}
+          onConfirm={() => {
+            handleRemove(exhibition.exhibitionId);
+            setConfirmDeleteExhibit(false);
+          }}
+        />
       </div>
     </div>
   );
