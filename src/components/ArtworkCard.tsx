@@ -12,13 +12,12 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
   artwork,
   viewMode,
 }) => {
-  const imageClass =
-    viewMode === "grid"
-      ? "w-full h-[250px] object-cover rounded"
-      : "w-[300px] h-full object-contain rounded";
-
   return (
-    <div className="flex flex-col h-full">
+    <div
+      className={`relative border p-4 rounded-xl hover:shadow ${
+        viewMode === "list" ? "w-[30%]" : "w-full"
+      }`}
+    >
       <Link
         to={`/artwork/${artwork.museumSource}/${artwork.id}`}
         className="flex flex-col h-full"
@@ -31,13 +30,17 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
             e.currentTarget.src = placeholder;
           }}
           loading="lazy"
-          className={imageClass}
+          className="w-full h-[250px] object-cover rounded"
         />
-        <h2 className="items-center w-full font-sans mt-2 mb-4 line-clamp-2 min-h-[3rem]">
-          {artwork.title || "Untitled"} by {artwork.artist || "Unknown"}
-        </h2>
+        <h3
+          className={`my-2 pb-12 font-bold ${
+            viewMode === "list" ? "text-center" : "text-start"
+          }`}
+        >
+          {artwork.title || "Untitled"}
+        </h3>
       </Link>
-      <div className="flex justify-end">
+      <div className="absolute bottom-4 right-4 mt-1">
         <AddArtworkButton artwork={artwork} variant="icon" />
       </div>
     </div>
