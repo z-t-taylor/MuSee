@@ -14,10 +14,12 @@ export const App: React.FC = () => {
   return (
     <div className="flex h-screen flex-col">
       <Header />
-      <div className="flex flex-1 h-full overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto relative">
-          <div className="min-h-[calc(100%-4rem)] pb-4 px-6 pt-4">
+      <div className="flex flex-1 min-h-0">
+        <div className="hidden md:block">
+          <Sidebar />
+        </div>
+        <main className="flex-1 overflow-y-auto relative md:ml-59 pb-16 md:pb-0 h-[calc(100vh-4rem)] md:h-auto">
+          <div className="p-6">
             <Routes>
               <Route path="/" element={<ArtworkList />} />
               <Route
@@ -33,6 +35,9 @@ export const App: React.FC = () => {
           </div>
           <Footer />
         </main>
+        <div className="md:hidden fixed bottom-0 w-full z-50 h-16">
+          <Sidebar />
+        </div>
       </div>
     </div>
   );
