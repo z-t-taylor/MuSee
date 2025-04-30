@@ -145,7 +145,7 @@ export const ArtworkList: React.FC = () => {
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 border rounded disabled:opacity-50"
+          className="px-4 py-2 border rounded-xl disabled:opacity-50"
         >
           Previous
         </button>
@@ -158,7 +158,7 @@ export const ArtworkList: React.FC = () => {
               ) : (
                 <button
                   onClick={() => setCurrentPage(Number(page))}
-                  className={`px-3 py-1 border rounded ${
+                  className={`px-3 py-1 border rounded-lg ${
                     page === currentPage ? "bg-blue-50" : ""
                   }`}
                 >
@@ -176,7 +176,7 @@ export const ArtworkList: React.FC = () => {
             )
           }
           disabled={currentPage === totalPages}
-          className="px-4 py-2 border rounded disabled:opacity-50"
+          className="px-4 py-2 border rounded-xl disabled:opacity-50"
         >
           Next
         </button>

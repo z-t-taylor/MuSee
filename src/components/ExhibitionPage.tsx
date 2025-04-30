@@ -172,19 +172,26 @@ export const ExhibitionPage: React.FC = () => {
                   }}
                   className="rounded-lg"
                 />
-                <h2 className="text-base my-2">
-                  Title: {artwork.title || "Unknown"}
-                </h2>
-                <h3 className="text-sm mb-4">
-                  Artist: {artwork.artist || "Unknown"}
-                </h3>
+                <h3 className="my-2 font-bold">{artwork.title || "Unknown"}</h3>
+                <div className="flex">
+                  <p className="font-bold text-sm pr-5">Artist:</p>
+                  <p className="italic w-2/3 pl-1">
+                    {artwork.artist || "Unknown"}
+                  </p>
+                </div>
+                <div className=" flex mb-4 mt-1">
+                  <p className="font-bold text-sm">Medium:</p>
+                  <p className="italic w-2/3 pl-1">
+                    {artwork.medium || "Unknown"}
+                  </p>
+                </div>
                 <Link
                   to={`/artwork/${artwork.museumSource}/${artwork.id}`}
-                  className="hover:underline hover:italic"
+                  className="hover:underline hover:italic mb-2 pb-1"
                 >
-                  <p className="mb-1 pb-8">See artwork in detail</p>
+                  <p className="text-sm">See artwork in detail</p>
                 </Link>
-                <div className="absolute bottom-4 right-4 mt-4">
+                <div className="absolute bottom-4 right-4 mt-1">
                   <button
                     onClick={() => {
                       setConfirmDeleteArt(artwork.id);
