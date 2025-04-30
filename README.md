@@ -11,9 +11,10 @@ A modern web application for curating virtual art exhibitions using collections 
   - Detailed artwork information with descriptions and historical context
 - **Exhibition Curation**
   - Create and manage custom exhibitions
-  - Save and organize artwork selections
+  - Save and organise artwork selections
+  - Filter through and search for artworks or themes
 - **Responsive and Accessible Design**
-  - Optimized for desktop and mobile viewing
+  - Optimised for desktop and mobile viewing
 - **Museum Integration**
   - Direct access to museum collection information
   - Public API integration with:
@@ -49,11 +50,11 @@ A modern web application for curating virtual art exhibitions using collections 
 
 1. Open terminal
 
-2. Clone repository by typing or pasting the following -
+2. Clone repository by typing or pasting the following into the terminal -
 
 git clone https://github.com/z-t-taylor/MuSee.git
 
-3. Install dependancies by typing or pasting the following -
+3. Install dependancies by typing or pasting the following into the terminal-
 
 npm install
 
