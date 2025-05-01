@@ -6,6 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 import { UserExhibitionArtwork } from "../api/userExhibition";
+import { parseYear } from "../util/parseYear";
 
 export const ExhibitionPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -35,8 +36,8 @@ export const ExhibitionPage: React.FC = () => {
     return [...exhibition.artworks].sort((a, b) => {
       const titleA = a.title.toLowerCase();
       const titleB = b.title.toLowerCase();
-      const createdA = new Date(a.creationDate ?? 0).getTime();
-      const createdB = new Date(b.creationDate ?? 0).getTime();
+      const createdA = parseYear(a.creationDate);
+      const createdB = parseYear(b.creationDate);
       const addedA = new Date(a.addedAt).getTime();
       const addedB = new Date(b.addedAt).getTime();
 
@@ -144,8 +145,8 @@ export const ExhibitionPage: React.FC = () => {
                 <option value="added-desc">Oldest Added</option>
                 <option value="title-asc">Title A-Z</option>
                 <option value="title-desc">Title Z-A</option>
-                <option value="created-asc">Newest-Oldest</option>
-                <option value="created-desc">Oldest-Newest </option>
+                <option value="created-asc">Artwork Oldest</option>
+                <option value="created-desc">Artwork Newest </option>
               </select>
             </p>
           </div>

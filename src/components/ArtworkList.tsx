@@ -6,6 +6,7 @@ import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
 import { getPageNumbers } from "../util/getPageNumbers";
 import CircularProgress from "@mui/material/CircularProgress";
+import { parseYear } from "../util/parseYear";
 
 export const ArtworkList: React.FC = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -58,21 +59,17 @@ export const ArtworkList: React.FC = () => {
   };
 
   const sortedArtToShow = [...artToShow].sort((a, b) => {
+    const createdA = parseYear(a.creationDate);
+    const createdB = parseYear(b.creationDate);
     switch (sortOption) {
       case "title-asc":
         return a.title.localeCompare(b.title);
       case "title-desc":
         return b.title.localeCompare(a.title);
       case "date-asc":
-        return (
-          parseInt(a.creationDate ?? "0", 10) -
-          parseInt(b.creationDate ?? "0", 10)
-        );
+        return createdA - createdB;
       case "date-desc":
-        return (
-          parseInt(b.creationDate ?? "0", 10) -
-          parseInt(a.creationDate ?? "0", 10)
-        );
+        return createdB - createdA;
       default:
         return 0;
     }
@@ -117,8 +114,8 @@ export const ArtworkList: React.FC = () => {
             >
               <option value="title-asc">Title A-Z</option>
               <option value="title-desc">Title Z-A</option>
-              <option value="date-asc">Oldest to Newest</option>
-              <option value="date-desc">Newest to Oldest</option>
+              <option value="date-asc">Artwork Newest</option>
+              <option value="date-desc">Artwork Oldest</option>
             </select>
           </p>
         </div>
