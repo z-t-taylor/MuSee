@@ -54,7 +54,7 @@ export const ArtworkSinglePage: React.FC = () => {
         </p>
       ) : !artwork ? (
         <div className="flex flex-col items-center justify-center mt-4 space-y-4">
-          <p className="mb-2 text-[#195183]">Loading..</p>
+          <p className="mb-2 text-[#195183]">Loading artwork..</p>
           <CircularProgress />
         </div>
       ) : (

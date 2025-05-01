@@ -15,7 +15,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
 }) => {
   const [filter, setFilter] = useState<UserExhibition[]>(exhibitions);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<Error | null>(null);
   const [sortOption, setSortOption] = useState<
     "title-asc" | "title-desc" | "added-asc" | "added-desc"
@@ -84,7 +84,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
       </div>
       {loading ? (
         <div className="flex flex-col items-center justify-center mt-4 space-y-4">
-          <p className="mb-2 text-[#195183]">Loading..</p>
+          <p className="mb-2 text-[#195183]">Loading exhibitions..</p>
           <CircularProgress />
         </div>
       ) : sortedExhibitions.length === 0 && !err ? (

@@ -73,7 +73,7 @@ export const ExhibitionPage: React.FC = () => {
   if (!exhibition) {
     return (
       <div className="flex flex-col items-center justify-center mt-4 space-y-4">
-        <p className="mb-2 text-[#195183]">Loading...</p>
+        <p className="mb-2 text-[#195183]">Loading exhibition...</p>
         <CircularProgress />
       </div>
     );
