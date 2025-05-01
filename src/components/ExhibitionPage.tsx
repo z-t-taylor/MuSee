@@ -62,7 +62,7 @@ export const ExhibitionPage: React.FC = () => {
   if (exhibitions.length > 0 && !exhibition) {
     return (
       <div>
-        <p className="flex justify-center pb-12">Exhibition not found</p>
+        <p className="text-center pb-12">Exhibition not found</p>
       </div>
     );
   }

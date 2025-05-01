@@ -4,6 +4,7 @@ import { ExhibitionCard } from "./ExhibitionCard";
 import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Link } from "react-router-dom";
 
 interface ExhibitionListProps {
   exhibitions?: UserExhibition[];
@@ -50,7 +51,15 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
         </div>
       ) : exhibitions.length === 0 && !err ? (
         <p className="flex justify-center pb-12">
-          Sorry, no exhibitions found.{" "}
+          No exhibitions found.{" "}
+          <Link
+            to={"/"}
+            className="text-blue-600 underline hover:text-blue-800"
+          >
+            <p className="flex justify-center pb-12">
+              Click here add to artworks to an exhibition
+            </p>
+          </Link>
         </p>
       ) : (
         <>

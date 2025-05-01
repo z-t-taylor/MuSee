@@ -98,7 +98,11 @@ export const ArtworkList: React.FC = () => {
           </button>
         </div>
       )}
-      {err && <p>Error: {err.message}</p>}
+      {err && (
+        <p className="text-center pb-12">
+          Error loading artworks: {err.message}
+        </p>
+      )}
       <div className="flex justify-between pt-2 mt-2">
         <div>
           <ViewToggle viewMode={viewMode} onToggle={setViewMode} />

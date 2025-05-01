@@ -49,7 +49,9 @@ export const ArtworkSinglePage: React.FC = () => {
   return (
     <div>
       {err ? (
-        <p>Error: {err.message}</p>
+        <p className="text-center pb-12">
+          Error loading artwork: {err.message}
+        </p>
       ) : !artwork ? (
         <div className="flex flex-col items-center justify-center mt-4 space-y-4">
           <p className="mb-2 text-[#195183]">Loading..</p>
