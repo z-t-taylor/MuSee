@@ -146,9 +146,16 @@ export const ArtworkList: React.FC = () => {
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
+          className="hidden md:block md:px-4 md:py-2 md:border md:rounded-xl md:disabled:opacity-50 md:text-base"
         >
           Previous
+        </button>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="md:hidden px-4 py-2 border rounded-xl disabled:opacity-50 text-sm"
+        >
+          Prev
         </button>
 
         <div className="flex items-center gap-2">
@@ -177,7 +184,7 @@ export const ArtworkList: React.FC = () => {
             )
           }
           disabled={currentPage === totalPages}
-          className="px-8 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
+          className="px-4 md:px-8 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
         >
           Next
         </button>
