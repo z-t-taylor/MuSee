@@ -87,7 +87,7 @@ export const ExhibitionPage: React.FC = () => {
 
   return (
     <div>
-      <div className="flex flex-col mt-10">
+      <div className="flex flex-col mt-3 md:mt-10">
         <div className="w-full md:w-1/3">
           <h2 className="italic mb-4">Exhibition:</h2>
           <h1 className="text-2xl font-bold">{exhibition.title}</h1>
@@ -160,7 +160,7 @@ export const ExhibitionPage: React.FC = () => {
               <div
                 key={artwork.id}
                 className={`relative border p-4 rounded-xl hover:shadow ${
-                  viewMode === "list" ? "w-[40%]" : "w-full"
+                  viewMode === "list" ? "w-full md:w-[40%]" : "w-full"
                 }`}
               >
                 <img
@@ -176,25 +176,25 @@ export const ExhibitionPage: React.FC = () => {
                   className="rounded-lg"
                 />
                 <h3 className="my-2 font-bold">{artwork.title || "Unknown"}</h3>
-                <div className="flex">
+                <div className="w-full flex flex-col md:flex-row items-start gap-2 mt-4">
                   <p className="font-bold text-sm pr-5">Artist:</p>
-                  <p className="italic w-2/3 pl-1">
-                    {artwork.artist || "Unknown"}
-                  </p>
+                  <p className="italic">{artwork.artist || "Unknown"}</p>
                 </div>
-                <div className=" flex mb-4 mt-1">
+                <div className="w-full flex flex-col md:flex-row items-start gap-2 mt-2 mb-2">
                   <p className="font-bold text-sm">Medium:</p>
-                  <p className="italic w-2/3 pl-1">
-                    {artwork.medium || "Unknown"}
-                  </p>
+                  <p className="italic">{artwork.medium || "Unknown"}</p>
                 </div>
-                <Link
-                  to={`/artwork/${artwork.museumSource}/${artwork.id}`}
-                  className="hover:underline hover:italic mb-2 pb-1"
-                >
-                  <p className="text-sm">See artwork in detail</p>
-                </Link>
-                <div className="absolute bottom-4 right-4 mt-1">
+                <div className="pb-8">
+                  <Link
+                    to={`/artwork/${artwork.museumSource}/${artwork.id}`}
+                    className="mb-2 pb-1"
+                  >
+                    <p className="text-sm italic md:not-italic md:hover:underline md:hover:italic">
+                      See artwork in detail
+                    </p>
+                  </Link>
+                </div>
+                <div className="absolute bottom-2 md:bottom-4 right-4 md:mt-1">
                   <button
                     onClick={() => {
                       setConfirmDeleteArt(artwork.id);
