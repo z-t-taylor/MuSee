@@ -12,6 +12,7 @@ interface AICArtworkBaseResponse {
   date_display: string | undefined;
   category_titles?: string[];
   department_title?: string | string[];
+  classification_title?: string;
 }
 
 export interface AICSingleArtworkResponse {
