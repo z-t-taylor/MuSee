@@ -22,7 +22,7 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 border rounded-xl py-3 px-4 text-center">
+    <div className="relative flex flex-col items-center gap-4 border rounded-xl py-3 px-4 pb-8">
       <Link
         to={`/exhibitions/${exhibition.slug}`}
         className="w-full"
@@ -31,7 +31,7 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
         {firstArtwork?.image?.imageURL && (
           <div>
             <img
-              className="w-full h-[40vh] object-cover rounded"
+              className="w-full h-full md:h-[50vh] object-cover rounded"
               src={firstArtwork.image.imageURL}
               alt={firstArtwork.image.altText || firstArtwork.title}
               onError={(e) => {
@@ -41,13 +41,13 @@ export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             />
           </div>
         )}
-        <div className="flex justify-start mt-2 px-2">
-          <h2 className="text-md font-semibold hover:underline">
+        <div className="flex justify-start mt-1 md:mt-2 px-2 pb-8">
+          <h2 className="text-start text-sm md:text-md font-semibold hover:underline break-words">
             {exhibition.title}
           </h2>
         </div>
       </Link>
-      <div className="w-full flex justify-end mt-2">
+      <div className="absolute bottom-2 right-4">
         <button
           onClick={() => {
             setConfirmDeleteExhibit(true);
