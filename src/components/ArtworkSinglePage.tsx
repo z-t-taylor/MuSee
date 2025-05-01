@@ -121,7 +121,7 @@ export const ArtworkSinglePage: React.FC = () => {
                             </p>
                             {artwork.styles && artwork.styles.length >= 1 && (
                               <p className="font-sans">
-                                Styles: {artwork.styles}
+                                Classification: {artwork.styles}
                               </p>
                             )}
                           </div>
