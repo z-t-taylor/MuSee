@@ -20,6 +20,7 @@ export const ArtworkCard: React.FC<ArtworkCardProps> = ({
     >
       <Link
         to={`/artwork/${artwork.museumSource}/${artwork.id}`}
+        state={{ artwork }}
         className="flex flex-col h-full"
       >
         <img

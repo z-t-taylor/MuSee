@@ -77,7 +77,7 @@ const fetchSingleAICArtwork = async (
 const searchAICArtworks = async (
   query: string,
   page: number = 1,
-  limit: number = 50
+  limit: number = 20
 ): Promise<Artwork[]> => {
   try {
     const offset = (page - 1) * limit;
@@ -126,11 +126,14 @@ const apiMet = axios.create({
   baseURL: "https://collectionapi.metmuseum.org/public/collection/v1",
 });
 
-const metQueries = {
+export const metQueries = {
   paintings: "paintings",
   prints: "prints",
-  sculptures: "sculpture",
+  photographs: "photographs",
+  sculpture: "sculpture",
   ceramics: "ceramics",
+  furniture: "furniture",
+  textiles: "textiles",
 } as const;
 
 export const fetchMetArtworkList = async (
@@ -187,16 +190,29 @@ export const fetchMetArtworkList = async (
   }
 };
 
+const fetchSingleMetArtwork = async (id: string): Promise<Artwork | null> => {
+  try {
+    const { data } = await apiMet.get(`/objects/${id}`);
+    if (data?.isPublicDomain && data?.primaryImage) {
+      return adaptMetToArtwork(data);
+    } else {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+};
+
 const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
   try {
-    const response = await apiMet.get<MetAPIBaseResponse>(
+    const { data: searchData } = await apiMet.get<MetAPIBaseResponse>(
       `/search?hasImages=true&q=${query}`
     );
 
-    if (!response.data.objectIDs?.length) return [];
+    if (!searchData.objectIDs?.length) return [];
 
     const artworks = await Promise.all(
-      response.data.objectIDs.slice(0, 50).map(async (id) => {
+      searchData.objectIDs.slice(0, 20).map(async (id) => {
         try {
           const { data } = await apiMet.get(`/objects/${id}`);
 
@@ -218,6 +234,19 @@ const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
     );
   } catch (error) {
     return [];
+  }
+};
+
+export const fetchArtworkById = async (
+  museumSource: string,
+  id: string
+): Promise<Artwork | null> => {
+  if (museumSource === "aic") {
+    return fetchSingleAICArtwork(id);
+  } else if (museumSource === "met") {
+    return fetchSingleMetArtwork(id);
+  } else {
+    throw new Error(`Unknown museumSource: ${museumSource}`);
   }
 };
 

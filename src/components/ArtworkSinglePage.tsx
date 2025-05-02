@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ReactNode, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Artwork } from "../api/types";
-import { fetchAllArtworks } from "../api/apiCalls";
+import { fetchArtworkById } from "../api/apiCalls";
 import { AddArtworkButton } from "./AddArtworkButton";
 import { Tabs } from "./Tabs";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -25,12 +25,8 @@ export const ArtworkSinglePage: React.FC = () => {
   useEffect(() => {
     const fetchArtwork = async () => {
       try {
-        const artworks = await fetchAllArtworks();
-
-        const foundArtwork = artworks.find(
-          (art) => art.id === id && art.museumSource === museumSource
-        );
-        setArtwork(foundArtwork || null);
+        const art = await fetchArtworkById(museumSource!, id!);
+        setArtwork(art);
       } catch (error) {
         setErr(error as Error);
       }

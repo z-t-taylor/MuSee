@@ -14,7 +14,7 @@ export const ArtworkList: React.FC = () => {
   const [results, setResults] = useState<Artwork[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [sortOption, setSortOption] = useState<
     "title-asc" | "title-desc" | "date-asc" | "date-desc"
@@ -101,7 +101,7 @@ export const ArtworkList: React.FC = () => {
         </p>
       )}
       <div className="flex justify-between pt-2 mt-2">
-        <div>
+        <div className="flex gap-4">
           <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
         </div>
         <div className="flex col-auto">
@@ -123,7 +123,7 @@ export const ArtworkList: React.FC = () => {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center mt-4 space-y-4">
-          <p className="mb-2 text-[#195183]">Loading..</p>
+          <p className="mb-2 text-[#195183]">Loading artworks..</p>
           <CircularProgress />
         </div>
       ) : currentArtworks.length === 0 && !err ? (
