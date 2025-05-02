@@ -49,7 +49,7 @@ export const ArtworkSinglePage: React.FC = () => {
           Error loading artwork: {err.message}
         </p>
       ) : !artwork ? (
-        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+        <div className="flex flex-col items-center justify-center mt-4 space-y-4  mr-0 md:mr-[150px]">
           <p className="mb-2 text-[#195183]">Loading artwork..</p>
           <CircularProgress />
         </div>

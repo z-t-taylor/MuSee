@@ -14,7 +14,7 @@ export const ArtworkList: React.FC = () => {
   const [results, setResults] = useState<Artwork[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [sortOption, setSortOption] = useState<
     "title-asc" | "title-desc" | "date-asc" | "date-desc"
@@ -95,6 +95,7 @@ export const ArtworkList: React.FC = () => {
           </button>
         </div>
       )}
+
       {err && (
         <p className="text-center pb-12">
           Error loading artworks: {err.message}
@@ -122,73 +123,74 @@ export const ArtworkList: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+        <div className="flex flex-col items-center justify-center mt-4 mr-0 md:mr-[150px] space-y-4">
           <p className="mb-2 text-[#195183]">Loading artworks..</p>
           <CircularProgress />
         </div>
       ) : currentArtworks.length === 0 && !err ? (
         <p className="flex justify-center pb-12">Sorry, no artworks found. </p>
       ) : (
-        <div
-          className={
-            viewMode === "grid"
-              ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
-              : "flex flex-col gap-4 items-center my-auto"
-          }
-        >
-          {currentArtworks.map((art) => (
-            <ArtworkCard key={art.id} artwork={art} viewMode={viewMode} />
-          ))}
-        </div>
-      )}
+        <>
+          <div
+            className={
+              viewMode === "grid"
+                ? "grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 pb-6"
+                : "flex flex-col gap-4 items-center my-auto"
+            }
+          >
+            {currentArtworks.map((art) => (
+              <ArtworkCard key={art.id} artwork={art} viewMode={viewMode} />
+            ))}
+          </div>
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="hidden md:block md:px-4 md:py-2 md:border md:rounded-xl md:disabled:opacity-50 md:text-base"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="md:hidden px-4 py-2 border rounded-xl disabled:opacity-50 text-sm"
+            >
+              Prev
+            </button>
 
-      <div className="flex justify-center items-center gap-4 mt-4">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="hidden md:block md:px-4 md:py-2 md:border md:rounded-xl md:disabled:opacity-50 md:text-base"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="md:hidden px-4 py-2 border rounded-xl disabled:opacity-50 text-sm"
-        >
-          Prev
-        </button>
-
-        <div className="flex items-center gap-2">
-          {pageNumbers.map((page, index) => (
-            <div key={index}>
-              {page === "..." ? (
-                <span className="px-2">...</span>
-              ) : (
-                <button
-                  onClick={() => setCurrentPage(Number(page))}
-                  className={`px-3 py-1text-sm md:text-base border rounded-lg ${
-                    page === currentPage ? "bg-blue-50" : ""
-                  }`}
-                >
-                  {page}
-                </button>
-              )}
+            <div className="flex items-center gap-2">
+              {pageNumbers.map((page, index) => (
+                <div key={index}>
+                  {page === "..." ? (
+                    <span className="px-2">...</span>
+                  ) : (
+                    <button
+                      onClick={() => setCurrentPage(Number(page))}
+                      className={`px-3 py-1 text-sm md:text-base border rounded-lg ${
+                        page === currentPage ? "bg-blue-50" : ""
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <button
-          onClick={() =>
-            setCurrentPage((prev) =>
-              currentPage < totalPages ? prev + 1 : prev
-            )
-          }
-          disabled={currentPage === totalPages}
-          className="px-4 md:px-8 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
-        >
-          Next
-        </button>
-      </div>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  currentPage < totalPages ? prev + 1 : prev
+                )
+              }
+              disabled={currentPage === totalPages}
+              className="px-4 md:px-8 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
