@@ -10,7 +10,7 @@ interface ModalProps {
   onCancel: () => void;
 }
 
-export const ExhibitionSelectionModel: React.FC<ModalProps> = ({
+export const ExhibitionSelectionModal: React.FC<ModalProps> = ({
   show,
   artworkTitle,
   artworkImage,

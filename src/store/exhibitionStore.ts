@@ -20,15 +20,22 @@ export const userExhibitionStore = create<ExhibitionStore>()(
       addArtwork: (artwork, exhibitionId) => {
         if (exhibitionId) {
           set({
-            exhibitions: get().exhibitions.map((exhibition) =>
-              exhibition.exhibitionId === exhibitionId
-                ? {
-                    ...exhibition,
-                    artworks: [...exhibition.artworks, artwork],
-                    updatedAt: new Date(),
-                  }
-                : exhibition
-            ),
+            exhibitions: get().exhibitions.map((exhibition) => {
+              if (exhibition.exhibitionId === exhibitionId) {
+                const exists = exhibition.artworks.some(
+                  (art) => art.id === artwork.id
+                );
+
+                return {
+                  ...exhibition,
+                  artworks: exists
+                    ? exhibition.artworks
+                    : [...exhibition.artworks, artwork],
+                  updatedAt: exists ? exhibition.updatedAt : new Date(),
+                };
+              }
+              return exhibition;
+            }),
           });
         } else {
           set({ selectedArtworks: [...get().selectedArtworks, artwork] });
