@@ -61,29 +61,9 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
   };
   return (
     <div>
-      <SearchBar
-        onSearch={handleSearch}
-        placeholder="Search for exhibitions..."
-      />
       {err && <p>Error: {err.message}</p>}
-      <div className="flex justify-between pt-2">
-        <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
-        <p className="pt-1">
-          <span className="pr-2 pl-2">Sort:</span>
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value as any)}
-            className="border px-2 py-1 rounded"
-          >
-            <option value="added-asc">Recently Added</option>
-            <option value="added-desc">Oldest Added</option>
-            <option value="title-asc">Title A-Z</option>
-            <option value="title-desc">Title Z-A</option>
-          </select>
-        </p>
-      </div>
       {loading ? (
-        <div className="flex flex-col items-center justify-center mt-4 space-y-4  mr-0 md:mr-[150px]">
+        <div className="flex flex-col items-center justify-center space-y-4 mt-8 mr-0 md:mr-[165px]">
           <p className="mb-2 text-[#195183]">Loading exhibitions..</p>
           <CircularProgress />
         </div>
@@ -101,6 +81,26 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
         </p>
       ) : (
         <>
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Search for exhibitions..."
+          />
+          <div className="flex justify-between pt-2">
+            <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+            <p className="pt-1">
+              <span className="pr-2 pl-2">Sort:</span>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as any)}
+                className="border px-2 py-1 rounded"
+              >
+                <option value="added-asc">Recently Added</option>
+                <option value="added-desc">Oldest Added</option>
+                <option value="title-asc">Title A-Z</option>
+                <option value="title-desc">Title Z-A</option>
+              </select>
+            </p>
+          </div>
           <h2 className="italic my-4">Exhibitions:</h2>
           <div
             className={

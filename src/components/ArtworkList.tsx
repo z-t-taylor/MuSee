@@ -83,47 +83,14 @@ export const ArtworkList: React.FC = () => {
   const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
-    <div className="artwork-list">
-      <SearchBar onSearch={handleSearch} placeholder="Search artworks..." />
-      {isSearching && (
-        <div className="flex justify-end mt-2">
-          <button
-            onClick={handleClearSearch}
-            className="px-4 py-2 bg-gray-200 rounded"
-          >
-            Clear Search
-          </button>
-        </div>
-      )}
-
+    <>
       {err && (
-        <p className="text-center pb-12">
+        <p className="text-center pb-12 mt-8">
           Error loading artworks: {err.message}
         </p>
       )}
-      <div className="flex justify-between pt-2 mt-2">
-        <div className="flex gap-4">
-          <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
-        </div>
-        <div className="flex col-auto">
-          <p className="pt-1">
-            <span className="pr-2 pl-2">Sort:</span>
-            <select
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value as any)}
-              className="border px-2 py-1 rounded ml-1"
-            >
-              <option value="title-asc">Title A-Z</option>
-              <option value="title-desc">Title Z-A</option>
-              <option value="date-asc">Artwork Newest</option>
-              <option value="date-desc">Artwork Oldest</option>
-            </select>
-          </p>
-        </div>
-      </div>
-
       {loading ? (
-        <div className="flex flex-col items-center justify-center mt-4 mr-0 md:mr-[150px] space-y-4">
+        <div className="flex flex-col items-center justify-center mt-8 mr-0 md:mr-[165px] space-y-4">
           <p className="mb-2 text-[#195183]">Loading artworks..</p>
           <CircularProgress />
         </div>
@@ -131,6 +98,37 @@ export const ArtworkList: React.FC = () => {
         <p className="flex justify-center pb-12">Sorry, no artworks found. </p>
       ) : (
         <>
+          <SearchBar onSearch={handleSearch} placeholder="Search artworks..." />
+          {isSearching && (
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={handleClearSearch}
+                className="px-4 py-2 bg-gray-200 rounded"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+          <div className="flex justify-between pt-2 mt-2">
+            <div className="flex gap-4">
+              <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+            </div>
+            <div className="flex col-auto">
+              <p className="pt-1">
+                <span className="pr-2 pl-2">Sort:</span>
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value as any)}
+                  className="border px-2 py-1 rounded ml-1"
+                >
+                  <option value="title-asc">Title A-Z</option>
+                  <option value="title-desc">Title Z-A</option>
+                  <option value="date-asc">Artwork Newest</option>
+                  <option value="date-desc">Artwork Oldest</option>
+                </select>
+              </p>
+            </div>
+          </div>
           <div
             className={
               viewMode === "grid"
@@ -142,7 +140,7 @@ export const ArtworkList: React.FC = () => {
               <ArtworkCard key={art.id} artwork={art} viewMode={viewMode} />
             ))}
           </div>
-          <div className="flex justify-center items-center gap-4 mt-4">
+          <div className="flex justify-center items-center gap-1 mt-4">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -166,7 +164,7 @@ export const ArtworkList: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => setCurrentPage(Number(page))}
-                      className={`px-3 py-1 text-sm md:text-base border rounded-lg ${
+                      className={`px-4 py-1 text-sm md:text-base border rounded-lg ${
                         page === currentPage ? "bg-blue-50" : ""
                       }`}
                     >
@@ -184,13 +182,13 @@ export const ArtworkList: React.FC = () => {
                 )
               }
               disabled={currentPage === totalPages}
-              className="px-4 md:px-8 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
+              className="px-4 md:px-6 py-2 border rounded-xl disabled:opacity-50 text-sm md:text-base"
             >
               Next
             </button>
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
