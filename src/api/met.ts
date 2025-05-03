@@ -34,6 +34,7 @@ export const adaptMetToArtwork = (item: MetSingleArtworkResponse): Artwork => ({
   medium: item.medium,
   origin: item.culture || item.country || item.artistNationality,
   styles: item.classification,
+  classification: item.classification,
   description: item.artistDisplayBio || undefined,
   exhibitionHistory: undefined,
   museumSource: "met",

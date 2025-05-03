@@ -11,6 +11,7 @@ export interface Artwork {
   medium?: string;
   origin?: string;
   styles?: string | string[];
+  classification?: string;
   description?: string;
   exhibitionHistory?: string;
   museumSource: "aic" | "met";
