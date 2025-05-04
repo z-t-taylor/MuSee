@@ -12,7 +12,10 @@ interface AICArtworkBaseResponse {
   date_display: string | undefined;
   category_titles?: string[];
   department_title?: string | string[];
-  classification_titles?: string;
+  classification_title?: string;
+  artwork_type_title?: string;
+  medium_display?: string;
+  is_public_domain: boolean;
 }
 
 export interface AICSingleArtworkResponse {
@@ -53,8 +56,8 @@ export const adaptAICToArtwork = (
   medium: item.medium_display,
   origin: item.place_of_origin,
   styles:
-    item.style_titles || item.classification_titles || item.department_title,
-  classification: item.classification_titles,
+    item.style_titles || item.classification_title || item.department_title,
+  classification: item.artwork_type_title,
   description: item.description,
   exhibitionHistory: item.exhibition_history,
   museumSource: "aic",

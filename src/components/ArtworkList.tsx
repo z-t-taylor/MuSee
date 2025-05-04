@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Artwork } from "../api/types";
-import { fetchAllArtworks, searchAllArtworks } from "../api/apiCalls";
+import {
+  fetchAllArtworks,
+  searchAllArtworks,
+  ArtFilterType,
+  filterAllArtworks,
+} from "../api/apiCalls";
 import { ArtworkCard } from "./ArtworkCard";
 import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
 import { getPageNumbers } from "../util/getPageNumbers";
-import CircularProgress from "@mui/material/CircularProgress";
 import { parseYear } from "../util/parseYear";
+import { FilterArtworks } from "./FilterArtworks";
+import { Loader } from "./Loader";
 
 export const ArtworkList: React.FC = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [err, setErr] = useState<Error | null>(null);
   const [results, setResults] = useState<Artwork[] | null>(null);
+  const [currentFilter, setCurrentFilter] = useState<ArtFilterType>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [loading, setLoading] = useState(true);
@@ -24,20 +31,27 @@ export const ArtworkList: React.FC = () => {
   const artToShow = results ?? artworks;
 
   useEffect(() => {
-    if (!isSearching) {
-      const getArtworks = async () => {
-        setLoading(true);
-        try {
-          const art = await fetchAllArtworks();
-          setArtworks(art);
-          setLoading(false);
-        } catch (error) {
-          setErr(error as Error);
-        }
-      };
-      getArtworks();
-    }
-  }, [currentPage, isSearching]);
+    let isActive = true;
+
+    const getArtworks = async () => {
+      try {
+        const art =
+          currentFilter === "all"
+            ? await fetchAllArtworks()
+            : await filterAllArtworks(currentFilter);
+        if (isActive) setArtworks(art);
+      } catch (error) {
+        if (isActive) setErr(error as Error);
+      } finally {
+        if (isActive) setLoading(false);
+      }
+    };
+
+    if (!isSearching) getArtworks();
+    return () => {
+      isActive = false;
+    };
+  }, [currentFilter, isSearching]);
 
   const handleSearch = async (query: string) => {
     setLoading(true);
@@ -56,6 +70,14 @@ export const ArtworkList: React.FC = () => {
     setResults(null);
     setIsSearching(false);
     setCurrentPage(1);
+  };
+
+  const handleFilterChange = (filter: ArtFilterType) => {
+    setCurrentFilter(filter);
+    setResults(null);
+    setIsSearching(false);
+    setCurrentPage(1);
+    setLoading(true);
   };
 
   const sortedArtToShow = [...artToShow].sort((a, b) => {
@@ -90,25 +112,31 @@ export const ArtworkList: React.FC = () => {
         </p>
       )}
       {loading ? (
-        <div className="flex flex-col items-center justify-center mt-8 mr-0 md:mr-[165px] space-y-4">
-          <p className="mb-2 text-[#195183]">Loading artworks..</p>
-          <CircularProgress />
-        </div>
+        <Loader initialMessage="Loading artworks…" loading={loading} />
       ) : currentArtworks.length === 0 && !err ? (
         <p className="flex justify-center pb-12">Sorry, no artworks found. </p>
       ) : (
         <>
-          <SearchBar onSearch={handleSearch} placeholder="Search artworks..." />
-          {isSearching && (
-            <div className="flex justify-end mt-2">
-              <button
-                onClick={handleClearSearch}
-                className="px-4 py-2 bg-gray-200 rounded"
-              >
-                Clear Search
-              </button>
-            </div>
-          )}
+          <div>
+            <SearchBar
+              onSearch={handleSearch}
+              placeholder="Search artworks..."
+            />
+            {isSearching && (
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={handleClearSearch}
+                  className="px-4 py-2 bg-gray-200 rounded"
+                >
+                  Clear Search
+                </button>
+              </div>
+            )}
+            <FilterArtworks
+              currentFilter={currentFilter}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
           <div className="flex justify-between pt-2 mt-2">
             <div className="flex gap-4">
               <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
