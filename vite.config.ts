@@ -10,12 +10,6 @@ export default defineConfig({
         target: "https://collectionapi.metmuseum.org",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/met-api/, "/public/collection/v1"),
-
-        configure: (proxy) => {
-          proxy.on("proxyReq", (proxyReq) => {
-            proxyReq.setHeader("Accept", "application/json");
-          });
-        },
       },
     },
   },
