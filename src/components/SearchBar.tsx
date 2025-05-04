@@ -27,6 +27,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <div className="relative w-full">
           <input
             type="text"
+            name="search-bar"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={placeholder}

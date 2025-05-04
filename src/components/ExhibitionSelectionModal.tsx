@@ -80,6 +80,7 @@ export const ExhibitionSelectionModal: React.FC<ModalProps> = ({
             </h3>
             <input
               type="text"
+              name="selection-modal"
               placeholder="Exhibition name (required)"
               value={newExhibitionName}
               onChange={(e) => {
