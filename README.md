@@ -2,13 +2,13 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A modern web application for curating virtual art exhibitions using collections from major museums - Art Institute Chicago (AIC) and the Metropolitan Museum of Art (the Met).
+MuSee is a virtual exhibition builder that lets you explore and curate artwork from two of the world’s leading museum collections, The Met and Art Institute of Chicago. Discover, collect, and organise pieces into your own themed exhibitions, all from your browser.
 
 ## Features
 
 - **Artwork Discovery**
   - Browse thousands of artworks from The Met and Art Institute Chicago
-  - Detailed artwork information with descriptions and historical context
+  - Explore in-depth artwork profiles with artist bios, medium details, and cultural significance
 - **Exhibition Curation**
   - Create and manage custom exhibitions
   - Save and organise artwork selections
@@ -26,51 +26,47 @@ A modern web application for curating virtual art exhibitions using collections 
 **Frontend**
 
 - ⚛️ React 19 + TypeScript
-- 🎨 Tailwind CSS + Material-UI
-- 🗺️ React Router 7
-- 🚀 Vite Build System
+- 🎨 Tailwind CSS (with `tailwind-scrollbar-hide`)
+- 🧱 Material UI (v7, styled with Emotion)
+- 🗺️ React Router DOM v7
+- ⚡ Vite (Build & Dev Server)
 
 **State Management**
 
-- 🐻 Zustand for global state
+- 🐻 Zustand (Lightweight global state)
 
-**APIs**
+**HTTP & Data**
 
-- Axios HTTP client
-- Public museum APIs (no keys required)
+- 🌐 Axios for API requests
+- 🔍 Public APIs:
+  - [Art Institute of Chicago API](https://www.artic.edu/open-access)
+  - [The Met Collection API](https://metmuseum.github.io)
+- 📦 `p-map` for controlled async mapping
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js v18+
-- npm/yarn
+- npm or yarn
 
 ### Installation
 
-1. Open terminal
-
-2. Clone repository by typing or pasting the following into the terminal -
-
+```bash
 git clone https://github.com/z-t-taylor/MuSee.git
-
-3. Install dependancies by typing or pasting the following into the terminal-
-
+cd MuSee
 npm install
-
-4. Start development server by running -
-
 npm run dev
+```
 
-License
-Distributed under the MIT License. See LICENSE for more information.
+## License
 
-Acknowledgements
-Art Institute Chicago for their open access API
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
 
-The Metropolitan Museum of Art for their public collection data
+## Acknowledgements
 
-React community for amazing open source tools
+- [Art Institute of Chicago](https://www.artic.edu/open-access) for their open access API
+- [The Metropolitan Museum of Art](https://metmuseum.github.io) for their public collection data
+- React community for amazing open-source tools
 
-Created by Zoe Taylor
-Find me here at <a>https://github.com/z-t-taylor<a/>
+Created by [Zoe Taylor](https://github.com/z-t-taylor)
