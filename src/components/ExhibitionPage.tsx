@@ -2,11 +2,11 @@ import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { userExhibitionStore } from "../store/exhibitionStore";
 import { ViewToggle } from "./ViewToggle";
-import CircularProgress from "@mui/material/CircularProgress";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 import { UserExhibitionArtwork } from "../api/userExhibition";
 import { parseYear } from "../util/parseYear";
+import { Loader } from "./Loader";
 
 export const ExhibitionPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -70,13 +70,9 @@ export const ExhibitionPage: React.FC = () => {
       </div>
     );
   }
+
   if (!exhibition) {
-    return (
-      <div className="flex flex-col items-center justify-center mt-4 space-y-4 mr-0 md:mr-[150px]">
-        <p className="mb-2 text-[#195183]">Loading exhibition...</p>
-        <CircularProgress />
-      </div>
-    );
+    return <Loader initialMessage="Loading exhibition…" loading={true} />;
   }
 
   const handleRemove = (artworkId: string) => {

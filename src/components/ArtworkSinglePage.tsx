@@ -4,7 +4,7 @@ import { Artwork } from "../api/types";
 import { fetchArtworkById } from "../api/apiCalls";
 import { AddArtworkButton } from "./AddArtworkButton";
 import { Tabs } from "./Tabs";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Loader } from "./Loader";
 
 interface ArtworkIDParams {
   [key: string]: string | undefined;
@@ -15,7 +15,10 @@ export const ArtworkSinglePage: React.FC = () => {
   const [artwork, setArtwork] = useState<Artwork | null>(null);
   const [err, setErr] = useState<Error | null>(null);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [loading, setLoading] = useState(true);
   const imgRef = useRef<HTMLImageElement>(null);
+
+  const ready = !loading && !err && !!artwork;
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
@@ -24,11 +27,14 @@ export const ArtworkSinglePage: React.FC = () => {
 
   useEffect(() => {
     const fetchArtwork = async () => {
+      setLoading(true);
       try {
         const art = await fetchArtworkById(museumSource!, id!);
         setArtwork(art);
       } catch (error) {
         setErr(error as Error);
+      } finally {
+        setLoading(false);
       }
     };
     if (museumSource && id) {
@@ -48,12 +54,9 @@ export const ArtworkSinglePage: React.FC = () => {
         <p className="text-center pb-12">
           Error loading artwork: {err.message}
         </p>
-      ) : !artwork ? (
-        <div className="flex flex-col items-center justify-center mt-4 space-y-4  mr-0 md:mr-[150px]">
-          <p className="mb-2 text-[#195183]">Loading artwork..</p>
-          <CircularProgress />
-        </div>
-      ) : (
+      ) : loading ? (
+        <Loader initialMessage="Loading artwork…" loading={loading} />
+      ) : ready ? (
         <div>
           <div className="flex flex-col md:flex-row mt-3 md:mt-6 mb-10">
             <div className="flex flex-col px-5 md:w-1/3 md:border-r pb-5 md:pb-0 mb-5 md:mb-0">
@@ -192,7 +195,7 @@ export const ArtworkSinglePage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

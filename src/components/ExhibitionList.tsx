@@ -3,8 +3,8 @@ import { UserExhibition } from "../api/userExhibition";
 import { ExhibitionCard } from "./ExhibitionCard";
 import { SearchBar } from "./SearchBar";
 import { ViewToggle } from "./ViewToggle";
-import CircularProgress from "@mui/material/CircularProgress";
 import { Link } from "react-router-dom";
+import { Loader } from "./Loader";
 
 interface ExhibitionListProps {
   exhibitions?: UserExhibition[];
@@ -15,7 +15,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
 }) => {
   const [filter, setFilter] = useState<UserExhibition[]>(exhibitions);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<Error | null>(null);
   const [sortOption, setSortOption] = useState<
     "title-asc" | "title-desc" | "added-asc" | "added-desc"
@@ -25,9 +25,10 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
     setLoading(true);
     try {
       setFilter(exhibitions);
-      setLoading(false);
     } catch (error) {
       setErr(error as Error);
+    } finally {
+      setLoading(false);
     }
   }, [exhibitions]);
 
@@ -63,10 +64,7 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
     <div>
       {err && <p>Error: {err.message}</p>}
       {loading ? (
-        <div className="flex flex-col items-center justify-center space-y-4 mt-8 mr-0 md:mr-[165px]">
-          <p className="mb-2 text-[#195183]">Loading exhibitions..</p>
-          <CircularProgress />
-        </div>
+        <Loader initialMessage="Loading exhibitions…" loading={loading} />
       ) : sortedExhibitions.length === 0 && !err ? (
         <p className="flex justify-center pb-12">
           No exhibitions found.{" "}
