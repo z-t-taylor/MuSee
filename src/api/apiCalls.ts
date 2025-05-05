@@ -186,14 +186,14 @@ const searchAICArtworks = async (
 const filterAICArtworks = async (
   type: ArtFilterType,
   page: number = 1,
-  limit: number = 16,
+  limit: number = 32,
   signal?: AbortSignal
 ): Promise<Artwork[]> => {
   try {
     const desiredLimit = limit;
     let validArtworks: Artwork[] = [];
     let currentPage = page;
-    const batchSize = 30;
+    const batchSize = 48;
 
     while (validArtworks.length < desiredLimit) {
       if (signal?.aborted) {
@@ -375,7 +375,7 @@ const filterMetArtworks = async (type: ArtFilterType): Promise<Artwork[]> => {
     let currentIndex = 0;
 
     while (
-      allArtworks.length < 16 &&
+      allArtworks.length < 32 &&
       currentIndex < searchData.objectIDs.length
     ) {
       const batch = searchData.objectIDs.slice(
@@ -405,7 +405,7 @@ const filterMetArtworks = async (type: ArtFilterType): Promise<Artwork[]> => {
         ) {
           allArtworks.push(adaptMetToArtwork(art));
         }
-        if (allArtworks.length >= 10) break;
+        if (allArtworks.length >= 32) break;
       }
 
       currentIndex += batchSize;
