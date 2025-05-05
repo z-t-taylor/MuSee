@@ -132,7 +132,6 @@ export const ExhibitionPage: React.FC = () => {
               <span className="pr-2 pl-2">Sort:</span>
               <select
                 value={sortOption}
-                defaultValue=""
                 onChange={(e) =>
                   setSortOption(e.target.value as typeof sortOption)
                 }
