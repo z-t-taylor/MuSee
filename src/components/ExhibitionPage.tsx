@@ -132,10 +132,12 @@ export const ExhibitionPage: React.FC = () => {
               <span className="pr-2 pl-2">Sort:</span>
               <select
                 value={sortOption}
+                defaultValue=""
                 onChange={(e) =>
                   setSortOption(e.target.value as typeof sortOption)
                 }
                 className="border px-2 py-1 rounded"
+                aria-label="sort"
               >
                 <option value="added-asc">Recently Added</option>
                 <option value="added-desc">Oldest Added</option>

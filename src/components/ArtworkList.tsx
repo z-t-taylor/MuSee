@@ -148,6 +148,7 @@ export const ArtworkList: React.FC = () => {
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value as any)}
                   className="border px-2 py-1 rounded ml-1"
+                  aria-label="sort"
                 >
                   <option value="title-asc">Title A-Z</option>
                   <option value="title-desc">Title Z-A</option>
