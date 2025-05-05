@@ -262,8 +262,7 @@ const filterAICArtworks = async (
 };
 
 const apiMet = axios.create({
-  baseURL: "/met-api",
-  timeout: 10000,
+  baseURL: "https://collectionapi.metmuseum.org/public/collection/v1",
 });
 
 const fetchMetArtworkList = async (
