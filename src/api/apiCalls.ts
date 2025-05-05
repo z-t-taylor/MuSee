@@ -112,6 +112,10 @@ const fetchSingleAICArtwork = async (
     if ((response.status === 429 || response.status >= 500) && retries > 0) {
       return fetchSingleAICArtwork(id, retries - 1);
     }
+    if (response.status === 403) {
+      console.error("Forbidden access to image. Skipping this artwork.");
+      return null;
+    }
     if (!response.data.data.image_id || !response.data.data.is_public_domain)
       return null;
 
@@ -120,9 +124,6 @@ const fetchSingleAICArtwork = async (
 
     return imageExists ? adaptAICToArtwork(response.data.data) : null;
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("AIC API error:", error);
-    }
     return null;
   }
 };
@@ -175,9 +176,6 @@ const searchAICArtworks = async (
               })
             : null;
         } catch (error) {
-          if (import.meta.env.DEV) {
-            console.error("AIC API error:", error);
-          }
           return null;
         }
       })
@@ -264,9 +262,6 @@ const filterAICArtworks = async (
     }
     return validArtworks.slice(0, desiredLimit);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("AIC API error:", error);
-    }
     return [];
   }
 };
@@ -311,7 +306,12 @@ const fetchMetArtworkList = async (
         ) {
           validArtworks.push(adaptMetToArtwork(objectData));
         }
-      } catch (error) {}
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          console.error("Met artwork not found (404). Skipping this artwork.");
+          return [];
+        }
+      }
 
       currentIndex++;
     }
@@ -321,8 +321,9 @@ const fetchMetArtworkList = async (
       (artwork) => artwork.image.imageURL
     );
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("Met API error:", error);
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      console.error("Met artwork not found (404). Skipping this artwork.");
+      return [];
     }
     return [];
   }
@@ -337,9 +338,6 @@ const fetchSingleMetArtwork = async (id: string): Promise<Artwork | null> => {
       return null;
     }
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("Met API error:", error);
-    }
     return null;
   }
 };
@@ -361,6 +359,12 @@ const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
             ? adaptMetToArtwork(data)
             : null;
         } catch (error) {
+          if (axios.isAxiosError(error) && error.response?.status === 404) {
+            console.error(
+              "Met artwork not found (404). Skipping this artwork."
+            );
+            return [];
+          }
           return null;
         }
       })
@@ -374,9 +378,6 @@ const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
       (artwork) => artwork.image.imageURL
     );
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("Met API error:", error);
-    }
     return [];
   }
 };
@@ -407,7 +408,13 @@ const filterMetArtworks = async (type: ArtFilterType): Promise<Artwork[]> => {
           try {
             const { data } = await apiMet.get(`/objects/${id}`);
             return data;
-          } catch {
+          } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.status === 404) {
+              console.error(
+                "Met artwork not found (404). Skipping this artwork."
+              );
+              return [];
+            }
             return null;
           }
         })
@@ -431,8 +438,9 @@ const filterMetArtworks = async (type: ArtFilterType): Promise<Artwork[]> => {
     }
     return await filteredValidImages(allArtworks, (art) => art.image.imageURL);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("Met API error:", error);
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      console.error("Met artwork not found (404). Skipping this artwork.");
+      return [];
     }
     return [];
   }
@@ -507,9 +515,6 @@ export const filterAllArtworks = async (
 
     return merged;
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("API error:", error);
-    }
     return [];
   }
 };
