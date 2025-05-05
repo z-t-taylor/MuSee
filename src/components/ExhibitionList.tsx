@@ -66,17 +66,19 @@ export const ExhibitionList: React.FC<ExhibitionListProps> = ({
       {loading ? (
         <Loader initialMessage="Loading exhibitions…" loading={loading} />
       ) : sortedExhibitions.length === 0 && !err ? (
-        <p className="flex justify-center pb-12">
-          No exhibitions found.{" "}
+        <div>
+          <p className="flex justify-center mt-2 mb-1">
+            No exhibitions found.{" "}
+          </p>
           <Link
             to={"/"}
             className="text-blue-600 underline hover:text-blue-800"
           >
-            <p className="flex justify-center pb-12">
-              Click here add to artworks to an exhibition
+            <p className="flex justify-center text-center pb-12">
+              Click here find to artworks and create an exhibition
             </p>
           </Link>
-        </p>
+        </div>
       ) : (
         <>
           <SearchBar
