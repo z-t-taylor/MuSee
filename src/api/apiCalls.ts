@@ -306,12 +306,7 @@ const fetchMetArtworkList = async (
         ) {
           validArtworks.push(adaptMetToArtwork(objectData));
         }
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          console.error("Met artwork not found (404). Skipping this artwork.");
-          return [];
-        }
-      }
+      } catch (error) {}
 
       currentIndex++;
     }
@@ -321,10 +316,6 @@ const fetchMetArtworkList = async (
       (artwork) => artwork.image.imageURL
     );
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      console.error("Met artwork not found (404). Skipping this artwork.");
-      return [];
-    }
     return [];
   }
 };
