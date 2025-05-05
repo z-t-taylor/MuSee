@@ -33,17 +33,24 @@ interface LoaderProps {
   className?: string;
 }
 
-export function Loader({
+export const Loader: React.FC<LoaderProps> = ({
   initialMessage,
   loading,
   initialDurationMs = 2000,
   rotateIntervalMs = 3500,
   className = "",
-}: LoaderProps) {
+}) => {
   const [phase, setPhase] = useState<0 | 1 | 2>(0);
   const [idx, setIdx] = useState(0);
+  const [shuffledFunFacts, setShuffledFunFacts] = useState<string[]>([]);
 
-  const shuffledFunFacts = shuffleArray(funFacts.slice(1));
+  useEffect(() => {
+    if (loading) {
+      setShuffledFunFacts(shuffleArray(funFacts.slice(1)));
+      setPhase(0);
+      setIdx(0);
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (!loading) return;
@@ -63,15 +70,14 @@ export function Loader({
       setIdx((i) => (i + 1) % shuffledFunFacts.length);
     }, rotateIntervalMs);
     return () => clearInterval(interval);
-  }, [loading, phase, rotateIntervalMs]);
+  }, [loading, phase, rotateIntervalMs, shuffledFunFacts]);
 
   if (!loading) return null;
 
   let message = initialMessage;
-
   if (phase === 1) {
     message = funFacts[0];
-  } else if (phase === 2) {
+  } else if (phase === 2 && shuffledFunFacts.length > 0) {
     message = shuffledFunFacts[idx];
   }
 
@@ -83,4 +89,4 @@ export function Loader({
       <CircularProgress />
     </div>
   );
-}
+};
