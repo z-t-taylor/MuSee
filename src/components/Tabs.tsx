@@ -19,9 +19,9 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
           <button
             key={index}
             onClick={() => setActiveIndex(index)}
-            className={`text-left font-medium p-2 pr-10 ${
+            className={`text-left text-sm md:text-base font-medium p-2 pr-1 mb-0 md:mb-1 md:pr-10 w-[90px] md:w-full ${
               index === activeIndex
-                ? "border-b-4 md:border-b-0 md:border-l-4 border-blue-500 bg-[#195183]/5"
+                ? "border-b-4 md:border-b-0 md:border-l-4 border-[#195183] bg-[#195183]/5"
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
             }`}
           >
