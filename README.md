@@ -7,6 +7,16 @@ MuSee is a virtual exhibition builder that lets you explore and curate artwork f
 - [You can find the live version of MuSee here.](https://musee-gules.vercel.app/)
 - Or follow the installation instructions below to see the code in action.
 
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
 ## Features
 
 - **Artwork Discovery**
