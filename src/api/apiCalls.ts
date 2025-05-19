@@ -10,6 +10,8 @@ import { Artwork } from "./types";
 import { adaptMetToArtwork, MetAPIBaseResponse } from "./met";
 import { checkImageExists } from "../util/checkImageExists";
 import { filteredValidImages } from "../util/filteredValidImages";
+import { fetchWithCache } from "../util/fetchWithCache";
+import { useCacheStore } from "../store/cacheStore";
 
 export type ArtFilterType =
   | "all"
@@ -44,6 +46,18 @@ const apiAIC = axios.create({
   baseURL: "https://api.artic.edu/api/v1/artworks",
   timeout: 8000,
 });
+
+const fetchCachedAICArtwork = async (id: string): Promise<Artwork | null> => {
+  return fetchWithCache(`artwork-${id}`, () => fetchSingleAICArtwork(id));
+};
+
+const fetchCachedAICArtworkList = async (
+  page = 1,
+  limit = 32
+): Promise<Artwork[]> => {
+  const key = `artwork-list-page-${page}-limit-${limit}`;
+  return fetchWithCache(key, () => fetchAICArtworkList(page, limit));
+};
 
 const fetchAICArtworkList = async (
   page: number = 1,
@@ -83,7 +97,7 @@ const fetchAICArtworkList = async (
     );
 
     const artworkPromises = filteredData.map((artwork) =>
-      fetchSingleAICArtwork(artwork.id.toString())
+      fetchCachedAICArtwork(artwork.id.toString())
     );
     const results = await Promise.all(artworkPromises);
 
@@ -133,62 +147,65 @@ const searchAICArtworks = async (
   page: number = 1,
   limit: number = 20
 ): Promise<Artwork[]> => {
-  try {
-    const offset = (page - 1) * limit;
+  const cacheKey = `aic-search-${query}-${page}-${limit}`;
+  return fetchWithCache(cacheKey, async () => {
+    try {
+      const offset = (page - 1) * limit;
 
-    const params = {
-      q: query,
-      "query[term][is_public_domain]": "true",
-      fields: [
-        "id",
-        "title",
-        "artist_display",
-        "image_id",
-        "date_display",
-        "thumbnail",
-        "medium_display",
-        "category_titles",
-        "is_public_domain",
-      ].join(","),
-      limit: limit.toString(),
-      offset: offset.toString(),
-    };
+      const params = {
+        q: query,
+        "query[term][is_public_domain]": "true",
+        fields: [
+          "id",
+          "title",
+          "artist_display",
+          "image_id",
+          "date_display",
+          "thumbnail",
+          "medium_display",
+          "category_titles",
+          "is_public_domain",
+        ].join(","),
+        limit: limit.toString(),
+        offset: offset.toString(),
+      };
 
-    const response = await apiAIC.get<AICArtworkListResponse>("/search", {
-      params,
-    });
+      const response = await apiAIC.get<AICArtworkListResponse>("/search", {
+        params,
+      });
 
-    const filtered = response.data.data.filter(
-      (artwork) =>
-        artwork.image_id && artwork.thumbnail && artwork.is_public_domain
-    );
+      const filtered = response.data.data.filter(
+        (artwork) =>
+          artwork.image_id && artwork.thumbnail && artwork.is_public_domain
+      );
 
-    const artworks = await Promise.all(
-      filtered.map(async (artwork) => {
-        try {
-          const imageUrl = `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`;
-          const imageExists = await checkImageExists(imageUrl);
+      const artworks = await Promise.all(
+        filtered.map(async (artwork) => {
+          try {
+            const imageUrl = `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`;
+            const imageExists = await checkImageExists(imageUrl);
 
-          return imageExists
-            ? adaptAICToArtwork({
-                ...artwork,
-                style_titles: artwork.category_titles || [],
-              })
-            : null;
-        } catch (error) {
-          return null;
-        }
-      })
-    );
+            return imageExists
+              ? adaptAICToArtwork({
+                  ...artwork,
+                  style_titles: artwork.category_titles || [],
+                })
+              : null;
+          } catch (error) {
+            return null;
+          }
+        })
+      );
 
-    const validArtworks = artworks.filter((art): art is Artwork => !!art);
-    return validArtworks.slice(0, limit);
-  } catch (error) {
-    return [];
-  }
+      const validArtworks = artworks.filter((art): art is Artwork => !!art);
+      return validArtworks.slice(0, limit);
+    } catch (error) {
+      return [];
+    }
+  });
 };
 
-const filterAICArtworks = async (
+const runFilteringLogic = async (
   type: ArtFilterType,
   page: number = 1,
   limit: number = 32,
@@ -266,10 +283,37 @@ const filterAICArtworks = async (
   }
 };
 
+const filterAICArtworks = async (
+  type: ArtFilterType,
+  page: number = 1,
+  limit: number = 32,
+  signal?: AbortSignal
+): Promise<Artwork[]> => {
+  if (signal) {
+    return runFilteringLogic(type, page, limit, signal);
+  } else {
+    const cacheKey = `aic-filter-${type}-${page}-${limit}`;
+    return fetchWithCache(cacheKey, () => runFilteringLogic(type, page, limit));
+  }
+};
+
 const apiMet = axios.create({
   baseURL: "https://collectionapi.metmuseum.org/public/collection/v1",
   timeout: 8000,
 });
+
+const fetchCachedMetArtwork = async (id: number): Promise<Artwork | null> => {
+  return fetchWithCache(`met-artwork-${id}`, () =>
+    fetchSingleMetArtwork(id.toString())
+  );
+};
+
+const fetchCachedMetArtworkList = async (
+  type: keyof typeof metQueries
+): Promise<Artwork[]> => {
+  const key = `met-artwork-list-${type}`;
+  return fetchWithCache(key, () => fetchMetArtworkList(type));
+};
 
 const fetchMetArtworkList = async (
   type: keyof typeof metQueries = "paintings"
@@ -297,14 +341,9 @@ const fetchMetArtworkList = async (
       const id = searchData.objectIDs[currentIndex];
 
       try {
-        const { data: objectData } = await apiMet.get(`/objects/${id}`);
-
-        if (
-          objectData?.isPublicDomain &&
-          objectData?.primaryImage &&
-          objectData?.message !== "Not a valid object"
-        ) {
-          validArtworks.push(adaptMetToArtwork(objectData));
+        const artwork = await fetchCachedMetArtwork(id);
+        if (artwork) {
+          validArtworks.push(artwork);
         }
       } catch (error) {}
 
@@ -334,107 +373,116 @@ const fetchSingleMetArtwork = async (id: string): Promise<Artwork | null> => {
 };
 
 const searchMetArtworks = async (query: string): Promise<Artwork[]> => {
-  try {
-    const { data: searchData } = await apiMet.get<MetAPIBaseResponse>(
-      `/search?hasImages=true&q=${query}`
-    );
-
-    if (!searchData.objectIDs?.length) return [];
-
-    const artworks = await Promise.all(
-      searchData.objectIDs.slice(0, 20).map(async (id) => {
-        try {
-          const { data } = await apiMet.get(`/objects/${id}`);
-
-          return data?.isPublicDomain && data?.primaryImage
-            ? adaptMetToArtwork(data)
-            : null;
-        } catch (error) {
-          if (axios.isAxiosError(error) && error.response?.status === 404) {
-            console.error(
-              "Met artwork not found (404). Skipping this artwork."
-            );
-            return [];
-          }
-          return null;
-        }
-      })
-    );
-
-    const validArtworks = artworks.filter(
-      (art): art is Artwork => art !== null
-    );
-    return await filteredValidImages(
-      validArtworks,
-      (artwork) => artwork.image.imageURL
-    );
-  } catch (error) {
-    return [];
-  }
-};
-
-const filterMetArtworks = async (type: ArtFilterType): Promise<Artwork[]> => {
-  try {
-    const { data: searchData } = await apiMet.get<MetAPIBaseResponse>(
-      "/search",
-      { params: { hasImages: true, q: metQueries[type] } }
-    );
-    if (!searchData.objectIDs?.length) return [];
-
-    const batchSize = 5;
-    const allArtworks: Artwork[] = [];
-    let currentIndex = 0;
-
-    while (
-      allArtworks.length < 32 &&
-      currentIndex < searchData.objectIDs.length
-    ) {
-      const batch = searchData.objectIDs.slice(
-        currentIndex,
-        currentIndex + batchSize
+  const cacheKey = `met-search-${encodeURIComponent(query)}`;
+  return fetchWithCache(cacheKey, async () => {
+    try {
+      const { data: searchData } = await apiMet.get<MetAPIBaseResponse>(
+        `/search?hasImages=true&q=${query}`
       );
 
-      const batchData = await Promise.all(
-        batch.map(async (id) => {
+      if (!searchData.objectIDs?.length) return [];
+
+      const artworks = await Promise.all(
+        searchData.objectIDs.slice(0, 20).map(async (id) => {
           try {
             const { data } = await apiMet.get(`/objects/${id}`);
-            return data;
+
+            return data?.isPublicDomain && data?.primaryImage
+              ? adaptMetToArtwork(data)
+              : null;
           } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
               console.error(
                 "Met artwork not found (404). Skipping this artwork."
               );
-              return [];
+              return null;
             }
             return null;
           }
         })
       );
 
-      for (const art of batchData) {
-        if (
-          art &&
-          art.isPublicDomain &&
-          art.primaryImage &&
-          art.classification
-            ?.toLowerCase()
-            .includes(metQueries[type].toLowerCase())
-        ) {
-          allArtworks.push(adaptMetToArtwork(art));
-        }
-        if (allArtworks.length >= 32) break;
-      }
-
-      currentIndex += batchSize;
-    }
-    return await filteredValidImages(allArtworks, (art) => art.image.imageURL);
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      console.error("Met artwork not found (404). Skipping this artwork.");
+      const validArtworks = artworks.filter(
+        (art): art is Artwork => art !== null
+      );
+      return filteredValidImages(
+        validArtworks,
+        (artwork) => artwork.image.imageURL
+      );
+    } catch (error) {
       return [];
     }
-    return [];
-  }
+  });
+};
+
+const filterMetArtworks = async (type: ArtFilterType): Promise<Artwork[]> => {
+  const cacheKey = `met-filter-${type}`;
+  return fetchWithCache(cacheKey, async () => {
+    try {
+      const { data: searchData } = await apiMet.get<MetAPIBaseResponse>(
+        "/search",
+        { params: { hasImages: true, q: metQueries[type] } }
+      );
+      if (!searchData.objectIDs?.length) return [];
+
+      const batchSize = 5;
+      const allArtworks: Artwork[] = [];
+      let currentIndex = 0;
+
+      while (
+        allArtworks.length < 32 &&
+        currentIndex < searchData.objectIDs.length
+      ) {
+        const batch = searchData.objectIDs.slice(
+          currentIndex,
+          currentIndex + batchSize
+        );
+
+        const batchData = await Promise.all(
+          batch.map(async (id) => {
+            try {
+              const { data } = await apiMet.get(`/objects/${id}`);
+              return data;
+            } catch (error) {
+              if (axios.isAxiosError(error) && error.response?.status === 404) {
+                console.error(
+                  "Met artwork not found (404). Skipping this artwork."
+                );
+                return null;
+              }
+              return null;
+            }
+          })
+        );
+
+        for (const art of batchData) {
+          if (
+            art &&
+            art.isPublicDomain &&
+            art.primaryImage &&
+            art.classification
+              ?.toLowerCase()
+              .includes(metQueries[type].toLowerCase())
+          ) {
+            allArtworks.push(adaptMetToArtwork(art));
+          }
+          if (allArtworks.length >= 32) break;
+        }
+
+        currentIndex += batchSize;
+      }
+      return await filteredValidImages(
+        allArtworks,
+        (art) => art.image.imageURL
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        console.error("Met artwork not found (404). Skipping this artwork.");
+        return [];
+      }
+      return [];
+    }
+  });
 };
 
 export const fetchArtworkById = async (
@@ -450,52 +498,17 @@ export const fetchArtworkById = async (
   }
 };
 
-export const fetchAllArtworks = async (): Promise<Artwork[]> => {
-  const [aicResults, metResults] = await Promise.all([
-    fetchAICArtworkList(),
-    fetchMetArtworkList(),
-  ]);
-  const merged: Artwork[] = [];
-  const unique = new Set<string>();
-
-  for (const art of [...aicResults, ...metResults]) {
-    if (!unique.has(art.id)) {
-      unique.add(art.id);
-      merged.push(art);
-    }
-  }
-  return merged;
-};
-
-export const searchAllArtworks = async (query: string): Promise<Artwork[]> => {
-  const [aicResults, metResults] = await Promise.all([
-    searchAICArtworks(query),
-    searchMetArtworks(query),
-  ]);
-
-  const merged: Artwork[] = [];
-  const unique = new Set<string>();
-
-  for (const art of [...aicResults, ...metResults]) {
-    if (!unique.has(art.id)) {
-      unique.add(art.id);
-      merged.push(art);
-    }
-  }
-  return merged;
-};
-
-export const filterAllArtworks = async (
-  type: ArtFilterType
+export const fetchAllArtworks = async (
+  metType: keyof typeof metQueries = "paintings"
 ): Promise<Artwork[]> => {
-  try {
+  return fetchWithCache("all-artworks", async () => {
     const [aicResults, metResults] = await Promise.all([
-      filterAICArtworks(type),
-      filterMetArtworks(type),
+      fetchCachedAICArtworkList(),
+      fetchCachedMetArtworkList(metType),
     ]);
 
-    const unique = new Set<string>();
     const merged: Artwork[] = [];
+    const unique = new Set<string>();
 
     for (const art of [...aicResults, ...metResults]) {
       if (!unique.has(art.id)) {
@@ -505,7 +518,56 @@ export const filterAllArtworks = async (
     }
 
     return merged;
-  } catch (error) {
-    return [];
-  }
+  });
+};
+
+export const searchAllArtworks = async (query: string): Promise<Artwork[]> => {
+  const cacheKey = `searched-all-artworks-${encodeURIComponent(query)}`;
+  useCacheStore.getState().clearCache(cacheKey);
+  return fetchWithCache(cacheKey, async () => {
+    const [aicResults, metResults] = await Promise.all([
+      searchAICArtworks(query),
+      searchMetArtworks(query),
+    ]);
+
+    const merged: Artwork[] = [];
+    const unique = new Set<string>();
+
+    for (const art of [...aicResults, ...metResults]) {
+      if (!unique.has(art.id)) {
+        unique.add(art.id);
+        merged.push(art);
+      }
+    }
+
+    return merged;
+  });
+};
+
+export const filterAllArtworks = async (
+  type: ArtFilterType
+): Promise<Artwork[]> => {
+  const cacheKey = `filtered-all-artworks-${type}`;
+  return fetchWithCache(cacheKey, async () => {
+    try {
+      const [aicResults, metResults] = await Promise.all([
+        filterAICArtworks(type),
+        filterMetArtworks(type),
+      ]);
+
+      const unique = new Set<string>();
+      const merged: Artwork[] = [];
+
+      for (const art of [...aicResults, ...metResults]) {
+        if (!unique.has(art.id)) {
+          unique.add(art.id);
+          merged.push(art);
+        }
+      }
+
+      return merged;
+    } catch (error) {
+      return [];
+    }
+  });
 };
